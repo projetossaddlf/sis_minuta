@@ -3,12 +3,60 @@ import { useAuth } from "../auth/useAuth";
 import { apiFetch } from "../services/api";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const API_LISTAR_DEPTO = import.meta.env.VITE_API_URL_LISTAR_DEPARTAMENTO;
+const API_LISTAR_MINUTA = import.meta.env.VITE_API_URL_LISTAR_MINUTA;
 
 export function DashboardPage() {
   const { user, logout, getValidAccessToken } = useAuth();
   const [apiResult, setApiResult] = useState("");
   const [apiError, setApiError] = useState("");
   const [loadingApi, setLoadingApi] = useState(false);
+
+  async function callListDptoApi() {
+    try {
+      setLoadingApi(true);
+      setApiError("");
+      setApiResult("");
+
+      const data = await apiFetch(
+        `${API_LISTAR_DEPTO}`,
+        {
+          method: "GET",
+        },
+        getValidAccessToken,
+      );
+
+      setApiResult(JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error(error);
+      setApiError(error.message || "Erro ao chamar API");
+    } finally {
+      setLoadingApi(false);
+    }
+  }
+
+  async function callListMinutaApi() {
+    try {
+      setLoadingApi(true);
+      setApiError("");
+      setApiResult("");
+
+      const data = await apiFetch(
+        `${API_LISTAR_MINUTA}`,
+        {
+          method: "GET",
+        },
+        getValidAccessToken,
+      );
+
+      setApiResult(JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error(error);
+      setApiError(error.message || "Erro ao chamar API");
+    } finally {
+      setLoadingApi(false);
+    }
+  }
 
   async function callHealthApi() {
     try {
@@ -75,6 +123,15 @@ export function DashboardPage() {
         <button onClick={callMeApi} disabled={loadingApi}>
           Chamar /me
         </button>
+
+        <button onClick={callListDptoApi} disabled={loadingApi}>
+          Listar Departamentos
+        </button>
+
+        <button onClick={callListMinutaApi} disabled={loadingApi}>
+          Listar Minutas
+        </button>
+
         <button onClick={logout}>Sair</button>
       </div>
 
