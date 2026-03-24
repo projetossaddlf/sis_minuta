@@ -4,6 +4,9 @@ import { apiFetch } from "../services/api";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const API_LISTAR_DEPTO = import.meta.env.VITE_API_URL_LISTAR_DEPARTAMENTO;
+const API_LISTAR_QUADRO = import.meta.env.VITE_API_URL_LISTAR_QUADRO;
+const API_LISTAR_POSTO_GRADUACAO = import.meta.env
+  .VITE_API_URL_LISTAR_POSTO_GRADUACAO;
 const API_LISTAR_MINUTA = import.meta.env.VITE_API_URL_LISTAR_MINUTA;
 const API_LISTAR_PESSOA = import.meta.env.VITE_API_URL_LISTAR_PESSOA;
 
@@ -21,6 +24,52 @@ export function DashboardPage() {
 
       const data = await apiFetch(
         `${API_LISTAR_DEPTO}`,
+        {
+          method: "GET",
+        },
+        getValidAccessToken,
+      );
+
+      setApiResult(JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error(error);
+      setApiError(error.message || "Erro ao chamar API");
+    } finally {
+      setLoadingApi(false);
+    }
+  }
+
+  async function callListQuadroApi() {
+    try {
+      setLoadingApi(true);
+      setApiError("");
+      setApiResult("");
+
+      const data = await apiFetch(
+        `${API_LISTAR_QUADRO}`,
+        {
+          method: "GET",
+        },
+        getValidAccessToken,
+      );
+
+      setApiResult(JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error(error);
+      setApiError(error.message || "Erro ao chamar API");
+    } finally {
+      setLoadingApi(false);
+    }
+  }
+
+  async function callListPostoGraduacaoApi() {
+    try {
+      setLoadingApi(true);
+      setApiError("");
+      setApiResult("");
+
+      const data = await apiFetch(
+        `${API_LISTAR_POSTO_GRADUACAO}`,
         {
           method: "GET",
         },
@@ -150,6 +199,14 @@ export function DashboardPage() {
 
         <button onClick={callListDptoApi} disabled={loadingApi}>
           Listar Departamentos
+        </button>
+
+        <button onClick={callListQuadroApi} disabled={loadingApi}>
+          Listar Quadro
+        </button>
+
+        <button onClick={callListPostoGraduacaoApi} disabled={loadingApi}>
+          Listar Posto/Graduaçãoo
         </button>
 
         <button onClick={callListMinutaApi} disabled={loadingApi}>
