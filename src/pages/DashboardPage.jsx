@@ -5,6 +5,7 @@ import { apiFetch } from "../services/api";
 const API_URL = import.meta.env.VITE_API_URL;
 const API_LISTAR_DEPTO = import.meta.env.VITE_API_URL_LISTAR_DEPARTAMENTO;
 const API_LISTAR_MINUTA = import.meta.env.VITE_API_URL_LISTAR_MINUTA;
+const API_LISTAR_PESSOA = import.meta.env.VITE_API_URL_LISTAR_PESSOA;
 
 export function DashboardPage() {
   const { user, logout, getValidAccessToken } = useAuth();
@@ -43,6 +44,29 @@ export function DashboardPage() {
 
       const data = await apiFetch(
         `${API_LISTAR_MINUTA}`,
+        {
+          method: "GET",
+        },
+        getValidAccessToken,
+      );
+
+      setApiResult(JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error(error);
+      setApiError(error.message || "Erro ao chamar API");
+    } finally {
+      setLoadingApi(false);
+    }
+  }
+
+  async function callListPessoaApi() {
+    try {
+      setLoadingApi(true);
+      setApiError("");
+      setApiResult("");
+
+      const data = await apiFetch(
+        `${API_LISTAR_PESSOA}`,
         {
           method: "GET",
         },
@@ -130,6 +154,10 @@ export function DashboardPage() {
 
         <button onClick={callListMinutaApi} disabled={loadingApi}>
           Listar Minutas
+        </button>
+
+        <button onClick={callListPessoaApi} disabled={loadingApi}>
+          Listar Pessoas
         </button>
 
         <button onClick={logout}>Sair</button>
