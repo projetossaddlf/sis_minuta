@@ -3,9 +3,6 @@ import { AppLayout } from "../components/AppLayout";
 import { DashboardPage } from "../pages/DashboardPage";
 import { MinutasPage } from "../pages/MinutasPage";
 import { PessoasPage } from "../pages/PessoasPage";
-import { DepartamentosPage } from "../pages/DepartamentosPage";
-import { QuadrosPage } from "../pages/QuadrosPage";
-import { PostosGraduacaoPage } from "../pages/PostosGraduacaoPage";
 
 export function AppRoutes() {
   return (
