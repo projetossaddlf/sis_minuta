@@ -13,9 +13,9 @@ export function DashboardPage() {
       />
 
       <div className="summary-grid">
-        <SummaryCard label="Usuário autenticado" value="1" />
-        <SummaryCard label="Módulos disponíveis" value="6" />
-        <SummaryCard label="Status do acesso" value="OK" />
+        <SummaryCard label="Minutas em Aberto" value="01" />
+        <SummaryCard label="Minutas em Assinatura" value="06" />
+        <SummaryCard label="Minutas Concluídas" value="02" />
       </div>
 
       <div className="info-grid">

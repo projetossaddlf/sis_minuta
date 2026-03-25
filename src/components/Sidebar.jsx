@@ -6,7 +6,7 @@ export function Sidebar() {
 
   return (
     <aside className="admin-sidebar">
-      <div className="admin-sidebar-title">SIS Minuta v2</div>
+      <div className="admin-sidebar-title">SIS Minuta - DLF SAD</div>
 
       <nav className="admin-nav">
         <NavLink to="/dashboard" className={linkClass}>

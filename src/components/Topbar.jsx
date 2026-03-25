@@ -9,7 +9,7 @@ export function Topbar() {
 
       <div className="admin-topbar-user">
         <span className="admin-user-badge">
-          {user?.name || user?.email || "Usuário"}
+          {user?.email || user?.nome || "Usuário não identificado!"}
         </span>
 
         <button className="admin-button" onClick={logout}>
