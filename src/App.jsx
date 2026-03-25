@@ -5,6 +5,7 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { MinutasPage } from "./pages/MinutasPage";
 import { PessoasPage } from "./pages/PessoasPage";
 import { CadastroMinutaPage } from "./pages/CadastroMinutaPage";
+import { EditarMinutaPage } from "./pages/EditarMinutaPage";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { useAuth } from "./auth/useAuth";
 import { AppLayout } from "./components/AppLayout";
@@ -34,6 +35,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/minutas" element={<MinutasPage />} />
         <Route path="/minutas/nova" element={<CadastroMinutaPage />} />
+        <Route path="/minutas/editar/:id" element={<EditarMinutaPage />} />
         <Route path="/pessoas" element={<PessoasPage />} />
       </Route>
     </Routes>
