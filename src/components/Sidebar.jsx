@@ -20,18 +20,6 @@ export function Sidebar() {
         <NavLink to="/pessoas" className={linkClass}>
           Pessoas
         </NavLink>
-
-        <NavLink to="/departamentos" className={linkClass}>
-          Departamentos
-        </NavLink>
-
-        <NavLink to="/quadros" className={linkClass}>
-          Quadros
-        </NavLink>
-
-        <NavLink to="/postos-graduacao" className={linkClass}>
-          Postos / Graduação
-        </NavLink>
       </nav>
     </aside>
   );
