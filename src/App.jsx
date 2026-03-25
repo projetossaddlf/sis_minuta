@@ -1,9 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
-import { DashboardPage } from "./pages/DashboardPage";
 import { LoggedOutPage } from "./pages/LoggedOutPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { MinutasPage } from "./pages/MinutasPage";
+import { PessoasPage } from "./pages/PessoasPage";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { useAuth } from "./auth/useAuth";
+import { AppLayout } from "./components/AppLayout";
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -12,19 +15,25 @@ function AppRoutes() {
     <Routes>
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />}
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
+        }
       />
 
       <Route path="/logged-out" element={<LoggedOutPage />} />
 
       <Route
-        path="/"
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <AppLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/minutas" element={<MinutasPage />} />
+        <Route path="/pessoas" element={<PessoasPage />} />
+      </Route>
     </Routes>
   );
 }
