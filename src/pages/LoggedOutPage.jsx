@@ -5,6 +5,7 @@ import {
   clearJustLoggedOut,
   clearStoredTokens,
 } from "../auth/authService";
+import "../styles/admin.css";
 
 export function LoggedOutPage() {
   const { login } = useAuth();
@@ -19,10 +20,40 @@ export function LoggedOutPage() {
   }, []);
 
   return (
-    <div style={{ padding: 24, fontFamily: "Arial" }}>
-      <h1>SIS Minuta</h1>
-      <p>Você saiu com sucesso.</p>
-      <button onClick={login}>Entrar novamente</button>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f3f4f6",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          width: 380,
+          background: "#fff",
+          borderRadius: 16,
+          padding: 28,
+          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+          border: "1px solid #e5e7eb",
+          textAlign: "center",
+        }}
+      >
+        <h1 style={{ marginBottom: 8 }}>SIS Minuta</h1>
+
+        <p style={{ color: "#6b7280", marginBottom: 24 }}>
+          Você saiu do sistema com sucesso.
+        </p>
+
+        <button
+          className="admin-button"
+          style={{ width: "100%" }}
+          onClick={login}
+        >
+          Entrar novamente
+        </button>
+      </div>
     </div>
   );
 }
