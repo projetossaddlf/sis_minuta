@@ -415,3 +415,9 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+.detail-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}

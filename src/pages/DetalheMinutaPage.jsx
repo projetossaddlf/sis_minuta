@@ -91,7 +91,7 @@ export function DetalheMinutaPage() {
       {erro && <div className="error-text">{erro}</div>}
 
       {!loading && !erro && minuta && (
-        <div className="detail-grid">
+        <div className="detail-stack">
           <div className="content-card">
             <div className="detail-card-header">
               <h2 className="detail-card-title">Dados da Minuta</h2>
