@@ -107,7 +107,7 @@ export function DetalheMinutaPage() {
                 <button
                   className="admin-button"
                   onClick={() =>
-                    navigate(`/minutas/editar/${minuta.id_minuta}`)
+                    navigate(`/minutas/editar/${minuta.nu_minuta}`)
                   }
                 >
                   Editar
@@ -116,11 +116,6 @@ export function DetalheMinutaPage() {
             </div>
 
             <div className="detail-info-grid">
-              <div className="detail-item">
-                <span className="detail-label">ID</span>
-                <strong>{minuta.id_minuta}</strong>
-              </div>
-
               <div className="detail-item">
                 <span className="detail-label">Número</span>
                 <strong>{minuta.nu_minuta || "-"}</strong>
@@ -156,27 +151,24 @@ export function DetalheMinutaPage() {
           </div>
 
           <div className="content-card">
-            <h2 className="detail-card-title">Observação</h2>
+            <h2 className="detail-card-title">Minuta Gerada</h2>
 
             <div className="text-card">
               <p>
-                Esta minuta está registrada no sistema para acompanhamento do
-                fluxo administrativo, permitindo o controle do status, do tipo
-                documental e da vinculação ao departamento responsável.
+                Publicação - PMDF/DLF/GAB/SSAD MINUTA DPTS Nº 008/2026 - PARA
+                PUBLICAÇÃO EM BCG ATOS DO CHEFE DO DEPARTAMENTO DE LOGÍSTICA E
+                FINANÇAS - DLF 1ª PARTE – SERVIÇOS DIÁRIOS Sem Alteração. 2ª
+                PARTE – ENSINO E INSTRUÇÃO Sem Alteração. 3ª PARTE – ASSUNTOS
+                GERAIS E ADMINISTRATIVOS I - ASSUNTOS ADMINISTRATIVOS (A) -
+                PESSOAL/ALTERAÇÕES DIVERSAS 1 - OFICIAIS A -
+                FÉRIAS/INÍCIO/TÉRMINO a) Gozaram férias referentes ao ano de
+                2024, no mês de DEZEMBRO de 2025, os seguintes policiais da
+                Diretoria de Patrimônio, Transporte e Suprimento:
               </p>
 
-              <p>
-                Recomenda-se manter os dados sempre atualizados, especialmente
-                em situações de assinatura, conclusão ou reclassificação do tipo
-                de minuta, para garantir rastreabilidade e segurança das
-                informações.
-              </p>
+              <p>Blá blá blá blá</p>
 
-              <p>
-                Em caso de inconsistência cadastral, a orientação é revisar os
-                dados do departamento e o número da minuta antes de concluir o
-                processamento.
-              </p>
+              <p>Blá blá blá</p>
             </div>
           </div>
         </div>
