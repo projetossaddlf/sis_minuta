@@ -1,9 +1,9 @@
-import { useAuth } from "../auth/useAuth";
+//import { useAuth } from "../auth/useAuth";
 import { PageHeader } from "../components/PageHeader";
 import { SummaryCard } from "../components/SummaryCard";
 
 export function DashboardPage() {
-  const { user } = useAuth();
+  //const { user } = useAuth();
 
   return (
     <div>
@@ -18,7 +18,7 @@ export function DashboardPage() {
         <SummaryCard label="Minutas Concluídas" value="02" />
       </div>
 
-      <div className="info-grid">
+      {/*<div className="info-grid">
         <div className="info-card">
           <strong>Nome</strong>
           <span>{user?.name || "-"}</span>
@@ -33,7 +33,7 @@ export function DashboardPage() {
           <strong>Sistema</strong>
           <span>SIS Minuta</span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
