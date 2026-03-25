@@ -13,9 +13,6 @@ export function AppRoutes() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/minutas" element={<MinutasPage />} />
           <Route path="/pessoas" element={<PessoasPage />} />
-          <Route path="/departamentos" element={<DepartamentosPage />} />
-          <Route path="/quadros" element={<QuadrosPage />} />
-          <Route path="/postos-graduacao" element={<PostosGraduacaoPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
