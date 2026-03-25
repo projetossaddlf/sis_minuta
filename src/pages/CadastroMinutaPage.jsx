@@ -147,7 +147,7 @@ export function CadastroMinutaPage() {
                 type="text"
                 value={form.nu_minuta}
                 onChange={handleChange}
-                placeholder="Ex: MIN-001"
+                placeholder="Ex: 001/2026"
               />
             </div>
 
@@ -180,7 +180,7 @@ export function CadastroMinutaPage() {
                 onChange={handleChange}
               >
                 <option value="0">BCG</option>
-                <option value="1">Restrita</option>
+                <option value="1">BRCG</option>
               </select>
             </div>
 

@@ -23,7 +23,7 @@ function renderTipo(tipo) {
   }
 
   if (valor === 1) {
-    return <span className="badge badge-orange">Restrita</span>;
+    return <span className="badge badge-orange">BRCG</span>;
   }
 
   return <span>-</span>;
@@ -84,7 +84,7 @@ export function DetalheMinutaPage() {
     <div>
       <PageHeader
         title="Detalhar Minuta"
-        subtitle={`Visualização completa da minuta #${id}`}
+        subtitle={`Minuta gerada para ser anexada no SEI.`}
       />
 
       {loading && <div className="loading-text">Carregando minuta...</div>}

@@ -215,7 +215,7 @@ export function EditarMinutaPage() {
                 onChange={handleChange}
               >
                 <option value="0">BCG</option>
-                <option value="1">Restrita</option>
+                <option value="1">BRCG</option>
               </select>
             </div>
 

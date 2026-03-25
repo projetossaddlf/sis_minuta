@@ -29,7 +29,7 @@ function renderTipoBadge(tipo) {
   }
 
   if (valor === 1) {
-    return <span className="badge badge-orange">Restrita</span>;
+    return <span className="badge badge-orange">BRCG</span>;
   }
 
   return <span>-</span>;
