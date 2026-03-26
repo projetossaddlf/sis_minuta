@@ -117,7 +117,9 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
   }
 
   async function buscarPessoaPorMatricula() {
-    if (!form.mat_pessoa?.trim()) {
+    const matricula = form.mat_pessoa?.trim();
+
+    if (!matricula) {
       setNomePessoa("");
       setIdPessoaEncontrada(null);
       return;
@@ -126,25 +128,19 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
     try {
       setBuscandoPessoa(true);
 
-      const data = await apiFetch(
-        `${API_BUSCAR_PESSOA_POR_MATRICULA}/${encodeURIComponent(form.mat_pessoa)}`,
-        { method: "GET" },
-        getValidAccessToken,
-      );
+      const url = `${API_BUSCAR_PESSOA_POR_MATRICULA}/${encodeURIComponent(matricula)}`;
 
-      setNomePessoa(
-        data?.nm_pessoa ||
-          data?.nome ||
-          data?.ds_pessoa ||
-          data?.nome_pessoa ||
-          "-",
-      );
+      console.log("Buscando pessoa pela matrícula:", matricula);
+      console.log("URL:", url);
 
-      setIdPessoaEncontrada(
-        data?.id_pessoa || data?.id || data?.idPessoa || null,
-      );
+      const data = await apiFetch(url, { method: "GET" }, getValidAccessToken);
+
+      console.log("Resposta da busca:", data);
+
+      setNomePessoa(data?.nm_pessoa || "-");
+      setIdPessoaEncontrada(data?.id_pessoa || null);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao buscar pessoa:", error);
       setNomePessoa("Pessoa não encontrada");
       setIdPessoaEncontrada(null);
     } finally {
