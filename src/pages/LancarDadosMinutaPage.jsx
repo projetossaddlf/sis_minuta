@@ -6,15 +6,6 @@ import { apiFetch } from "../services/api";
 
 const API_BUSCAR_MINUTA = import.meta.env.VITE_API_URL_BUSCAR_MINUTA;
 
-function formatarData(data) {
-  if (!data) return "-";
-
-  const dt = new Date(data);
-  if (Number.isNaN(dt.getTime())) return data;
-
-  return dt.toLocaleDateString("pt-BR");
-}
-
 function renderTipo(tipo) {
   const valor = Number(tipo);
 
@@ -103,15 +94,6 @@ export function LancarDadosMinutaPage() {
                 >
                   Voltar
                 </button>
-
-                <button
-                  className="admin-button"
-                  onClick={() =>
-                    navigate(`/minutas/editar/${minuta.nu_minuta}`)
-                  }
-                >
-                  Editar
-                </button>
               </div>
             </div>
 
@@ -137,38 +119,6 @@ export function LancarDadosMinutaPage() {
                 <span className="detail-label">Status</span>
                 <div>{renderStatus(minuta.st_minuta)}</div>
               </div>
-
-              <div className="detail-item">
-                <span className="detail-label">Data de abertura</span>
-                <strong>{formatarData(minuta.dt_abertura)}</strong>
-              </div>
-
-              <div className="detail-item">
-                <span className="detail-label">Data de conclusão</span>
-                <strong>{formatarData(minuta.dt_conclusao)}</strong>
-              </div>
-            </div>
-          </div>
-
-          <div className="content-card">
-            <h2 className="detail-card-title">Minuta Gerada</h2>
-
-            <div className="text-card">
-              <p>
-                Publicação - PMDF/DLF/GAB/SSAD MINUTA DPTS Nº 008/2026 - PARA
-                PUBLICAÇÃO EM BCG ATOS DO CHEFE DO DEPARTAMENTO DE LOGÍSTICA E
-                FINANÇAS - DLF 1ª PARTE – SERVIÇOS DIÁRIOS Sem Alteração. 2ª
-                PARTE – ENSINO E INSTRUÇÃO Sem Alteração. 3ª PARTE – ASSUNTOS
-                GERAIS E ADMINISTRATIVOS I - ASSUNTOS ADMINISTRATIVOS (A) -
-                PESSOAL/ALTERAÇÕES DIVERSAS 1 - OFICIAIS A -
-                FÉRIAS/INÍCIO/TÉRMINO a) Gozaram férias referentes ao ano de
-                2024, no mês de DEZEMBRO de 2025, os seguintes policiais da
-                Diretoria de Patrimônio, Transporte e Suprimento:
-              </p>
-
-              <p>Blá blá blá blá</p>
-
-              <p>Blá blá blá</p>
             </div>
           </div>
         </div>
