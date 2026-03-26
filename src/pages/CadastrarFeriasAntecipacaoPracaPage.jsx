@@ -81,6 +81,8 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
 
   const idMinuta = useMemo(() => Number(id), [id]);
 
+  const [nuMinuta, setNuMinuta] = useState("");
+
   const [form, setForm] = useState(getFormInicial());
   const [nomePessoa, setNomePessoa] = useState("");
   const [idPessoaEncontrada, setIdPessoaEncontrada] = useState(null);
@@ -126,9 +128,14 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
         getValidAccessToken,
       );
 
-      setRegistros(Array.isArray(data) ? data : []);
+      const minuta = data?.minuta || null;
+      const lista = Array.isArray(data?.registros) ? data.registros : [];
+
+      setNuMinuta(minuta?.nu_minuta || "");
+      setRegistros(lista);
     } catch (error) {
       console.error(error);
+      setNuMinuta("");
       setRegistros([]);
     } finally {
       setLoadingRegistros(false);
@@ -326,7 +333,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
     <div>
       <PageHeader
         title="Férias Antecipação - Praça"
-        subtitle={`Lançamento vinculado à minuta #${idMinuta}`}
+        subtitle={`Lançamento vinculado à minuta ${nuMinuta || `#${idMinuta}`}`}
       />
 
       <div className="detail-stack">
@@ -544,6 +551,11 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
                     <th>Matrícula</th>
                     <th>Nome</th>
                     <th>Qtd. Dias</th>
+                    <th>Ano Exercício</th>
+                    <th>Mês Previsto</th>
+                    <th>Ano Previsto</th>
+                    <th>Início</th>
+                    <th>Fim</th>
                     <th>Req. SEI</th>
                     <th>Dt. Deferimento</th>
                     <th>Nº Deferimento</th>
@@ -575,7 +587,11 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
                           "-"}
                       </td>
                       <td>{item.qtd_dias_ferias || "-"}</td>
-
+                      <td>{item.ano_exercicio || "-"}</td>
+                      <td>{getNomeMes(item.mes_previsto)}</td>
+                      <td>{item.ano_previsto || "-"}</td>
+                      <td>{formatarData(item.dt_inicio_periodo)}</td>
+                      <td>{formatarData(item.dt_fim_periodo)}</td>
                       <td>{item.nu_requerimento_sei || "-"}</td>
                       <td>{formatarData(item.dt_deferimento_sei)}</td>
                       <td>{item.nu_deferimento_sei || "-"}</td>
