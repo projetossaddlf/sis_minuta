@@ -6,6 +6,7 @@ import { MinutasPage } from "./pages/MinutasPage";
 import { PessoasPage } from "./pages/PessoasPage";
 import { CadastroMinutaPage } from "./pages/CadastroMinutaPage";
 import { EditarMinutaPage } from "./pages/EditarMinutaPage";
+import { LancarDadosMinutaPage } from "./pages/LancarDadosMinutaPage";
 import { DetalheMinutaPage } from "./pages/DetalheMinutaPage";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { useAuth } from "./auth/useAuth";
@@ -38,6 +39,10 @@ function AppRoutes() {
         <Route path="/minutas/nova" element={<CadastroMinutaPage />} />
         <Route path="/minutas/:id" element={<DetalheMinutaPage />} />
         <Route path="/minutas/editar/:id" element={<EditarMinutaPage />} />
+        <Route
+          path="/minutas/lancar_dados/:id"
+          element={<LancarDadosMinutaPage />}
+        />
         <Route path="/pessoas" element={<PessoasPage />} />
       </Route>
     </Routes>

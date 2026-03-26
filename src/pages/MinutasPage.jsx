@@ -160,6 +160,13 @@ export function MinutasPage() {
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button
             className="table-action-button"
+            onClick={() => navigate(`/minutas/lancar_dados/${row.id_minuta}`)}
+          >
+            Lançar Dados
+          </button>
+
+          <button
+            className="table-action-button"
             onClick={() => navigate(`/minutas/${row.id_minuta}`)}
           >
             Detalhar
