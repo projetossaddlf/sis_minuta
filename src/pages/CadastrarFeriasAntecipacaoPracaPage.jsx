@@ -340,7 +340,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
               <button
                 type="button"
                 className="admin-button admin-button-secondary"
-                onClick={() => navigate(`/minutas/lancar-dados/${idMinuta}`)}
+                onClick={() => navigate(`/minutas/lancar_dados/${idMinuta}`)}
               >
                 Voltar
               </button>
@@ -516,7 +516,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
               <button
                 type="button"
                 className="admin-button admin-button-secondary"
-                onClick={() => navigate(`/minutas/lancar-dados/${idMinuta}`)}
+                onClick={() => navigate(`/minutas/lancar_dados/${idMinuta}`)}
                 disabled={saving}
               >
                 Cancelar
