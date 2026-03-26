@@ -75,7 +75,7 @@ export function LancarDadosMinutaPage() {
     <div>
       <PageHeader
         title="Lançar Dados da Minuta"
-        subtitle={`Montar sessões da Minuta.`}
+        subtitle="Montar sessões da Minuta."
       />
 
       {loading && <div className="loading-text">Carregando minuta...</div>}
@@ -119,6 +119,23 @@ export function LancarDadosMinutaPage() {
                 <span className="detail-label">Status</span>
                 <div>{renderStatus(minuta.st_minuta)}</div>
               </div>
+            </div>
+          </div>
+
+          <div className="content-card">
+            <div className="detail-card-header">
+              <h2 className="detail-card-title">Lançamentos da Minuta</h2>
+            </div>
+
+            <div className="actions-grid">
+              <button
+                className="admin-button"
+                onClick={() =>
+                  navigate(`/minutas/${id}/ferias-antecipacao-praca`)
+                }
+              >
+                Lançar Dados Férias Antecipação - Praça
+              </button>
             </div>
           </div>
         </div>

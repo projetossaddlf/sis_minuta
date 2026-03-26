@@ -43,6 +43,10 @@ function AppRoutes() {
           path="/minutas/lancar_dados/:id"
           element={<LancarDadosMinutaPage />}
         />
+        <Route
+          path="/minutas/:id/ferias-antecipacao-praca"
+          element={<CadastrarFeriasAntecipacaoPracaPage />}
+        />
         <Route path="/pessoas" element={<PessoasPage />} />
       </Route>
     </Routes>
