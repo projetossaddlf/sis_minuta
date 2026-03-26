@@ -237,25 +237,19 @@ export function DetalheMinutaPage() {
                     style={{ marginBottom: "16px" }}
                   >
                     <p>
-                      {index + 1} - {montarNomePessoa(item)}, matrícula{" "}
-                      {item.mat_pessoa || "-"}, com{" "}
-                      {item.qtd_dias_ferias || "-"} dias de férias, exercício{" "}
-                      {item.ano_exercicio || "-"}, previstas para{" "}
+                      {montarNomePessoa(item)}, Matrícula{" "}
+                      {item.mat_pessoa || "-"}, a Vossa Senhoria a antecipação
+                      de {item.qtd_dias_ferias || "-"} dias de férias
+                      regulamentares, referente ao exercício de{" "}
+                      {item.ano_exercicio || "-"}, prevista para o mês de{" "}
                       {getNomeMes(item.mes_previsto)} de{" "}
-                      {item.ano_previsto || "-"}, no período de{" "}
+                      {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
                       {formatarData(item.dt_inicio_periodo)} a{" "}
-                      {formatarData(item.dt_fim_periodo)}.
+                      {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
+                      {item.nu_requerimento_sei || "-"}. Deferido em{" "}
+                      {formatarData(item.dt_deferimento_sei)} Doc. SEI
+                      {item.nu_deferimento_sei || "-"}.
                     </p>
-
-                    {(item.nu_requerimento_sei ||
-                      item.dt_deferimento_sei ||
-                      item.nu_deferimento_sei) && (
-                      <p>
-                        Requerimento SEI: {item.nu_requerimento_sei || "-"}.
-                        Deferimento SEI: {item.nu_deferimento_sei || "-"}. Data
-                        do deferimento: {formatarData(item.dt_deferimento_sei)}.
-                      </p>
-                    )}
                   </div>
                 ))
               )}
