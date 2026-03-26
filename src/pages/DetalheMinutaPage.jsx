@@ -208,7 +208,7 @@ export function DetalheMinutaPage() {
             <div className="text-card">
               <p>
                 MINUTA {minuta.ds_departamento} Nº {minuta.nu_minuta} - PARA
-                PUBLICAÇÃO EM {minuta.tp_minuta}
+                PUBLICAÇÃO EM {renderTipo(minuta.tp_minuta)}
               </p>
               <p>ATOS DO CHEFE DO DEPARTAMENTO DE LOGÍSTICA E FINANÇAS - DLF</p>
               <p>1ª PARTE – SERVIÇOS DIÁRIOS</p>
@@ -226,10 +226,7 @@ export function DetalheMinutaPage() {
               <p>2 - DE PRAÇAS</p>
 
               {registrosFerias.length === 0 ? (
-                <p>
-                  Não há registros de férias/antecipação de praças cadastrados
-                  para esta minuta.
-                </p>
+                <p>Sem Alteração.</p>
               ) : (
                 registrosFerias.map((item, index) => (
                   <div
