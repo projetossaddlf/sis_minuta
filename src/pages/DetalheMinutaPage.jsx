@@ -155,15 +155,8 @@ export function DetalheMinutaPage() {
 
             <div className="text-card">
               <p>
-                Publicação - PMDF/DLF/GAB/SSAD MINUTA DPTS Nº 008/2026 - PARA
-                PUBLICAÇÃO EM BCG ATOS DO CHEFE DO DEPARTAMENTO DE LOGÍSTICA E
-                FINANÇAS - DLF 1ª PARTE – SERVIÇOS DIÁRIOS Sem Alteração. 2ª
-                PARTE – ENSINO E INSTRUÇÃO Sem Alteração. 3ª PARTE – ASSUNTOS
-                GERAIS E ADMINISTRATIVOS I - ASSUNTOS ADMINISTRATIVOS (A) -
-                PESSOAL/ALTERAÇÕES DIVERSAS 1 - OFICIAIS A -
-                FÉRIAS/INÍCIO/TÉRMINO a) Gozaram férias referentes ao ano de
-                2024, no mês de DEZEMBRO de 2025, os seguintes policiais da
-                Diretoria de Patrimônio, Transporte e Suprimento:
+                MINUTA {minuta.ds_departamento} Nº {minuta.nu_minuta} - PARA
+                PUBLICAÇÃO EM BCG
               </p>
 
               <p>Blá blá blá blá</p>
