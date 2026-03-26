@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
@@ -543,11 +544,6 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
                     <th>Matrícula</th>
                     <th>Nome</th>
                     <th>Qtd. Dias</th>
-                    <th>Ano Exercício</th>
-                    <th>Mês Previsto</th>
-                    <th>Ano Previsto</th>
-                    <th>Início</th>
-                    <th>Fim</th>
                     <th>Req. SEI</th>
                     <th>Dt. Deferimento</th>
                     <th>Nº Deferimento</th>
@@ -579,11 +575,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
                           "-"}
                       </td>
                       <td>{item.qtd_dias_ferias || "-"}</td>
-                      <td>{item.ano_exercicio || "-"}</td>
-                      <td>{getNomeMes(item.mes_previsto)}</td>
-                      <td>{item.ano_previsto || "-"}</td>
-                      <td>{formatarData(item.dt_inicio_periodo)}</td>
-                      <td>{formatarData(item.dt_fim_periodo)}</td>
+
                       <td>{item.nu_requerimento_sei || "-"}</td>
                       <td>{formatarData(item.dt_deferimento_sei)}</td>
                       <td>{item.nu_deferimento_sei || "-"}</td>
