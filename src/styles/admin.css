@@ -513,3 +513,27 @@ a {
 .table-wrapper {
   overflow-x: auto;
 }
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-action-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.icon-action-button:hover {
+  background-color: #f1f5f9;
+}
+
+.icon-action-button.danger:hover {
+  background-color: #fee2e2;
+}

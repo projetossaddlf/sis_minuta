@@ -13,6 +13,12 @@ const API_BUSCAR_PESSOA_POR_MATRICULA = import.meta.env
 const API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA = import.meta.env
   .VITE_API_URL_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA;
 
+const API_ATUALIZAR_FERIAS_ANTECIP_PRACA = import.meta.env
+  .VITE_API_URL_ATUALIZAR_FERIAS_ANTECIP_PRACA;
+
+const API_EXCLUIR_FERIAS_ANTECIP_PRACA = import.meta.env
+  .VITE_API_URL_EXCLUIR_FERIAS_ANTECIP_PRACA;
+
 const MESES = [
   { value: 1, label: "Janeiro" },
   { value: 2, label: "Fevereiro" },
@@ -36,10 +42,25 @@ function getMesAtual() {
   return new Date().getMonth() + 1;
 }
 
+function getFormInicial() {
+  return {
+    mat_pessoa: "",
+    qtd_dias_ferias: "",
+    ano_exercicio: getAnoAtual(),
+    mes_previsto: getMesAtual(),
+    ano_previsto: getAnoAtual(),
+    dt_inicio_periodo: "",
+    dt_fim_periodo: "",
+    nu_requerimento_sei: "",
+    dt_deferimento_sei: "",
+    nu_deferimento_sei: "",
+  };
+}
+
 function formatarData(data) {
   if (!data) return "-";
 
-  const valor = String(data);
+  const valor = String(data).slice(0, 10);
   const partes = valor.split("-");
 
   if (partes.length !== 3) return valor;
@@ -59,19 +80,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
 
   const idMinuta = useMemo(() => Number(id), [id]);
 
-  const [form, setForm] = useState({
-    mat_pessoa: "",
-    qtd_dias_ferias: "",
-    ano_exercicio: getAnoAtual(),
-    mes_previsto: getMesAtual(),
-    ano_previsto: getAnoAtual(),
-    dt_inicio_periodo: "",
-    dt_fim_periodo: "",
-    nu_requerimento_sei: "",
-    dt_deferimento_sei: "",
-    nu_deferimento_sei: "",
-  });
-
+  const [form, setForm] = useState(getFormInicial());
   const [nomePessoa, setNomePessoa] = useState("");
   const [idPessoaEncontrada, setIdPessoaEncontrada] = useState(null);
   const [buscandoPessoa, setBuscandoPessoa] = useState(false);
@@ -82,6 +91,15 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
   const [saving, setSaving] = useState(false);
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
+
+  const [idRegistroEdicao, setIdRegistroEdicao] = useState(null);
+
+  function limparFormulario() {
+    setForm(getFormInicial());
+    setNomePessoa("");
+    setIdPessoaEncontrada(null);
+    setIdRegistroEdicao(null);
+  }
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -129,21 +147,18 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
       setBuscandoPessoa(true);
 
       const url = `${API_BUSCAR_PESSOA_POR_MATRICULA}/${encodeURIComponent(matricula)}`;
-
-      console.log("Buscando pessoa pela matrícula:", matricula);
-      console.log("URL:", url);
-
       const data = await apiFetch(url, { method: "GET" }, getValidAccessToken);
 
-      console.log("Resposta da busca:", data);
+      const nomeMontado = [
+        data?.ds_posto_graduacao,
+        data?.ds_quadro,
+        data?.nm_pessoa,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
 
-      setNomePessoa(
-        data?.ds_posto_graduacao +
-          " " +
-          data?.ds_quadro +
-          " " +
-          data?.nm_pessoa || "-",
-      );
+      setNomePessoa(nomeMontado || "Pessoa não encontrada");
       setIdPessoaEncontrada(data?.id_pessoa || null);
     } catch (error) {
       console.error("Erro ao buscar pessoa:", error);
@@ -151,6 +166,76 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
       setIdPessoaEncontrada(null);
     } finally {
       setBuscandoPessoa(false);
+    }
+  }
+
+  function handleEditarRegistro(item) {
+    setErro("");
+    setSucesso("");
+
+    setIdRegistroEdicao(item.id_ferias_antecipacao_praca || null);
+
+    setForm({
+      mat_pessoa: item.mat_pessoa || "",
+      qtd_dias_ferias: item.qtd_dias_ferias || "",
+      ano_exercicio: item.ano_exercicio || getAnoAtual(),
+      mes_previsto: item.mes_previsto || getMesAtual(),
+      ano_previsto: item.ano_previsto || getAnoAtual(),
+      dt_inicio_periodo: String(item.dt_inicio_periodo || "").slice(0, 10),
+      dt_fim_periodo: String(item.dt_fim_periodo || "").slice(0, 10),
+      nu_requerimento_sei: item.nu_requerimento_sei || "",
+      dt_deferimento_sei: String(item.dt_deferimento_sei || "").slice(0, 10),
+      nu_deferimento_sei: item.nu_deferimento_sei || "",
+    });
+
+    const nomeMontado =
+      item.nome_completo ||
+      [item.ds_posto_graduacao, item.ds_quadro, item.nm_pessoa]
+        .filter(Boolean)
+        .join(" ")
+        .trim() ||
+      item.nm_pessoa ||
+      item.nome_pessoa ||
+      item.ds_pessoa ||
+      "";
+
+    setNomePessoa(nomeMontado);
+    setIdPessoaEncontrada(item.id_pessoa || null);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function handleExcluirRegistro(item) {
+    const idRegistro = item.id_ferias_antecipacao_praca;
+
+    if (!idRegistro) {
+      setErro("Não foi possível identificar o registro para exclusão.");
+      return;
+    }
+
+    const confirmou = window.confirm("Deseja realmente excluir este registro?");
+
+    if (!confirmou) return;
+
+    try {
+      setErro("");
+      setSucesso("");
+
+      await apiFetch(
+        `${API_EXCLUIR_FERIAS_ANTECIP_PRACA}/${idRegistro}`,
+        { method: "DELETE" },
+        getValidAccessToken,
+      );
+
+      if (idRegistroEdicao === idRegistro) {
+        limparFormulario();
+      }
+
+      setSucesso("Registro excluído com sucesso.");
+      await carregarRegistros();
+    } catch (error) {
+      console.error(error);
+      setErro(error.message || "Erro ao excluir o registro.");
     }
   }
 
@@ -202,33 +287,31 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
         id_minuta: idMinuta,
       };
 
-      await apiFetch(
-        API_CADASTRAR_FERIAS_ANTECIP_PRACA,
-        {
-          method: "POST",
-          body: JSON.stringify(payload),
-        },
-        getValidAccessToken,
-      );
+      if (idRegistroEdicao) {
+        await apiFetch(
+          `${API_ATUALIZAR_FERIAS_ANTECIP_PRACA}/${idRegistroEdicao}`,
+          {
+            method: "PUT",
+            body: JSON.stringify(payload),
+          },
+          getValidAccessToken,
+        );
 
-      setSucesso("Registro cadastrado com sucesso.");
+        setSucesso("Registro atualizado com sucesso.");
+      } else {
+        await apiFetch(
+          API_CADASTRAR_FERIAS_ANTECIP_PRACA,
+          {
+            method: "POST",
+            body: JSON.stringify(payload),
+          },
+          getValidAccessToken,
+        );
 
-      setForm({
-        mat_pessoa: "",
-        qtd_dias_ferias: "",
-        ano_exercicio: getAnoAtual(),
-        mes_previsto: getMesAtual(),
-        ano_previsto: getAnoAtual(),
-        dt_inicio_periodo: "",
-        dt_fim_periodo: "",
-        nu_requerimento_sei: "",
-        dt_deferimento_sei: "",
-        nu_deferimento_sei: "",
-      });
+        setSucesso("Registro cadastrado com sucesso.");
+      }
 
-      setNomePessoa("");
-      setIdPessoaEncontrada(null);
-
+      limparFormulario();
       await carregarRegistros();
     } catch (error) {
       console.error(error);
@@ -248,7 +331,9 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
       <div className="detail-stack">
         <div className="content-card">
           <div className="detail-card-header">
-            <h2 className="detail-card-title">Cadastrar Dados</h2>
+            <h2 className="detail-card-title">
+              {idRegistroEdicao ? "Editar Dados" : "Cadastrar Dados"}
+            </h2>
 
             <div className="detail-card-actions">
               <button
@@ -409,8 +494,23 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
 
             <div className="form-actions">
               <button type="submit" className="admin-button" disabled={saving}>
-                {saving ? "Salvando..." : "Cadastrar"}
+                {saving
+                  ? "Salvando..."
+                  : idRegistroEdicao
+                    ? "Salvar alteração"
+                    : "Cadastrar"}
               </button>
+
+              {idRegistroEdicao && (
+                <button
+                  type="button"
+                  className="admin-button admin-button-secondary"
+                  onClick={limparFormulario}
+                  disabled={saving}
+                >
+                  Cancelar edição
+                </button>
+              )}
 
               <button
                 type="button"
@@ -451,6 +551,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
                     <th>Req. SEI</th>
                     <th>Dt. Deferimento</th>
                     <th>Nº Deferimento</th>
+                    <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -463,7 +564,16 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
                     >
                       <td>{item.mat_pessoa || "-"}</td>
                       <td>
-                        {item.nm_pessoa ||
+                        {item.nome_completo ||
+                          [
+                            item.ds_posto_graduacao,
+                            item.ds_quadro,
+                            item.nm_pessoa,
+                          ]
+                            .filter(Boolean)
+                            .join(" ")
+                            .trim() ||
+                          item.nm_pessoa ||
                           item.nome_pessoa ||
                           item.ds_pessoa ||
                           "-"}
@@ -477,6 +587,27 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
                       <td>{item.nu_requerimento_sei || "-"}</td>
                       <td>{formatarData(item.dt_deferimento_sei)}</td>
                       <td>{item.nu_deferimento_sei || "-"}</td>
+                      <td>
+                        <div className="table-actions">
+                          <button
+                            type="button"
+                            className="icon-action-button"
+                            title="Editar"
+                            onClick={() => handleEditarRegistro(item)}
+                          >
+                            ✏️
+                          </button>
+
+                          <button
+                            type="button"
+                            className="icon-action-button danger"
+                            title="Excluir"
+                            onClick={() => handleExcluirRegistro(item)}
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
