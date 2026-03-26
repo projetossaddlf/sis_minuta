@@ -238,16 +238,16 @@ export function DetalheMinutaPage() {
                   >
                     <p>
                       {montarNomePessoa(item)}, Matrícula{" "}
-                      {item.mat_pessoa || "-"}, a Vossa Senhoria a antecipação
-                      de {item.qtd_dias_ferias || "-"} dias de férias
-                      regulamentares, referente ao exercício de{" "}
+                      {item.mat_pessoa || "-"}, requer a Vossa Senhoria a
+                      antecipação de {item.qtd_dias_ferias || "-"} dias de
+                      férias regulamentares, referente ao exercício de{" "}
                       {item.ano_exercicio || "-"}, prevista para o mês de{" "}
                       {getNomeMes(item.mes_previsto)} de{" "}
                       {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
                       {formatarData(item.dt_inicio_periodo)} a{" "}
                       {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
                       {item.nu_requerimento_sei || "-"}. Deferido em{" "}
-                      {formatarData(item.dt_deferimento_sei)} Doc. SEI
+                      {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
                       {item.nu_deferimento_sei || "-"}.
                     </p>
                   </div>
