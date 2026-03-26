@@ -5,6 +5,8 @@ import { useAuth } from "../auth/useAuth";
 import { apiFetch } from "../services/api";
 
 const API_BUSCAR_MINUTA = import.meta.env.VITE_API_URL_BUSCAR_MINUTA;
+const API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA;
 
 function formatarData(data) {
   if (!data) return "-";
@@ -47,12 +49,47 @@ function renderStatus(status) {
   return <span className="badge">{String(status)}</span>;
 }
 
+function getNomeMes(mes) {
+  const meses = {
+    1: "janeiro",
+    2: "fevereiro",
+    3: "março",
+    4: "abril",
+    5: "maio",
+    6: "junho",
+    7: "julho",
+    8: "agosto",
+    9: "setembro",
+    10: "outubro",
+    11: "novembro",
+    12: "dezembro",
+  };
+
+  return meses[Number(mes)] || "-";
+}
+
+function montarNomePessoa(item) {
+  return (
+    item.nome_completo ||
+    [item.ds_posto_graduacao, item.ds_quadro, item.nm_pessoa]
+      .filter(Boolean)
+      .join(" ")
+      .trim() ||
+    item.nm_pessoa ||
+    item.nome_pessoa ||
+    item.ds_pessoa ||
+    item.mat_pessoa ||
+    "-"
+  );
+}
+
 export function DetalheMinutaPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { getValidAccessToken } = useAuth();
 
   const [minuta, setMinuta] = useState(null);
+  const [registrosFerias, setRegistrosFerias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
 
@@ -62,13 +99,28 @@ export function DetalheMinutaPage() {
         setLoading(true);
         setErro("");
 
-        const data = await apiFetch(
-          `${API_BUSCAR_MINUTA}/${id}`,
-          { method: "GET" },
-          getValidAccessToken,
-        );
+        const [dataMinuta, dataRegistros] = await Promise.all([
+          apiFetch(
+            `${API_BUSCAR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+        ]);
 
-        setMinuta(data);
+        setMinuta(dataMinuta);
+
+        const lista = Array.isArray(dataRegistros?.registros)
+          ? dataRegistros.registros
+          : Array.isArray(dataRegistros)
+            ? dataRegistros
+            : [];
+
+        setRegistrosFerias(lista);
       } catch (error) {
         console.error(error);
         setErro(error.message || "Erro ao carregar minuta");
@@ -156,12 +208,57 @@ export function DetalheMinutaPage() {
             <div className="text-card">
               <p>
                 MINUTA {minuta.ds_departamento} Nº {minuta.nu_minuta} - PARA
-                PUBLICAÇÃO EM BCG
+                PUBLICAÇÃO EM {minuta.tp_minuta}
               </p>
+              <p>ATOS DO CHEFE DO DEPARTAMENTO DE LOGÍSTICA E FINANÇAS - DLF</p>
+              <p>1ª PARTE – SERVIÇOS DIÁRIOS</p>
+              <p>Sem Alteração.</p>
+              <p>2ª PARTE – ENSINO E INSTRUÇÃO</p>
+              <p>Sem Alteração.</p>
+              <p>3ª PARTE – ASSUNTOS GERAIS E ADMINISTRATIVOS</p>
+              <p>I - ASSUNTOS ADMINISTRATIVOS</p>
+              <p>(A) - PESSOAL/ALTERAÇÕES DIVERSAS</p>
+              <p>1 - OFICIAIS</p>
+              <p>A - FÉRIAS/INÍCIO/TÉRMINO</p>
+              <p>(B) DESPACHOS EM REQUERIMENTOS</p>
+              <p>1 - DE OFICIAIS</p>
+              <p>A - FÉRIAS/ANTECIPAÇÃO</p>
+              <p>2 - DE PRAÇAS</p>
 
-              <p>Blá blá blá blá</p>
+              {registrosFerias.length === 0 ? (
+                <p>
+                  Não há registros de férias/antecipação de praças cadastrados
+                  para esta minuta.
+                </p>
+              ) : (
+                registrosFerias.map((item, index) => (
+                  <div
+                    key={item.id_ferias_antecipacao_praca || index}
+                    style={{ marginBottom: "16px" }}
+                  >
+                    <p>
+                      {index + 1} - {montarNomePessoa(item)}, matrícula{" "}
+                      {item.mat_pessoa || "-"}, com{" "}
+                      {item.qtd_dias_ferias || "-"} dias de férias, exercício{" "}
+                      {item.ano_exercicio || "-"}, previstas para{" "}
+                      {getNomeMes(item.mes_previsto)} de{" "}
+                      {item.ano_previsto || "-"}, no período de{" "}
+                      {formatarData(item.dt_inicio_periodo)} a{" "}
+                      {formatarData(item.dt_fim_periodo)}.
+                    </p>
 
-              <p>Blá blá blá</p>
+                    {(item.nu_requerimento_sei ||
+                      item.dt_deferimento_sei ||
+                      item.nu_deferimento_sei) && (
+                      <p>
+                        Requerimento SEI: {item.nu_requerimento_sei || "-"}.
+                        Deferimento SEI: {item.nu_deferimento_sei || "-"}. Data
+                        do deferimento: {formatarData(item.dt_deferimento_sei)}.
+                      </p>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
