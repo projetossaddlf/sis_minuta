@@ -223,8 +223,15 @@ export function DetalheMinutaPage() {
               <p>(B) DESPACHOS EM REQUERIMENTOS</p>
               <p>1 - DE OFICIAIS</p>
               <p>A - FÉRIAS/ANTECIPAÇÃO</p>
+              <p>Sem Alteração.</p>
+              <p>B - FÉRIAS/MARCAÇÃO</p>
+              <p>Sem Alteração.</p>
+              <p>C - FÉRIAS/REPROGRAMAÇÃO</p>
+              <p>Sem Alteração.</p>
+              <p>D - ABONO DE PONTO ANUAL</p>
+              <p>Sem Alteração.</p>
               <p>2 - DE PRAÇAS</p>
-
+              <p>A - FÉRIAS/ANTECIPAÇÃO</p>
               {registrosFerias.length === 0 ? (
                 <p>Sem Alteração.</p>
               ) : (
@@ -250,6 +257,12 @@ export function DetalheMinutaPage() {
                   </div>
                 ))
               )}
+              <p>B - FÉRIAS/MARCAÇÃO</p>
+              <p>Sem Alteração.</p>
+              <p>C - FÉRIAS/REPROGRAMAÇÃO</p>
+              <p>Sem Alteração.</p>
+              <p>D - ABONO DE PONTO ANUAL</p>
+              <p>Sem Alteração.</p>
             </div>
           </div>
         </div>
