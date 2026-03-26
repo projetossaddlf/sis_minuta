@@ -137,7 +137,13 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
 
       console.log("Resposta da busca:", data);
 
-      setNomePessoa(data?.nm_pessoa || "-");
+      setNomePessoa(
+        data?.ds_posto_graduacao +
+          " " +
+          data?.ds_quadro +
+          " " +
+          data?.nm_pessoa || "-",
+      );
       setIdPessoaEncontrada(data?.id_pessoa || null);
     } catch (error) {
       console.error("Erro ao buscar pessoa:", error);
