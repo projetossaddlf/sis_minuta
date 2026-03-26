@@ -265,24 +265,26 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
           {sucesso && <div className="success-text">{sucesso}</div>}
 
           <form onSubmit={handleSubmit} className="form-grid">
-            <div className="form-group">
-              <label htmlFor="mat_pessoa">Matrícula</label>
-              <input
-                id="mat_pessoa"
-                name="mat_pessoa"
-                type="text"
-                value={form.mat_pessoa}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <div className="form-row-2">
+              <div className="form-group">
+                <label htmlFor="mat_pessoa">Matrícula</label>
+                <input
+                  id="mat_pessoa"
+                  name="mat_pessoa"
+                  type="text"
+                  value={form.mat_pessoa}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <label>Nome</label>
-              <div className="form-readonly-box">
-                {buscandoPessoa
-                  ? "Buscando..."
-                  : nomePessoa || "Informe a matrícula"}
+              <div className="form-group">
+                <label>Nome</label>
+                <div className="form-readonly-box">
+                  {buscandoPessoa
+                    ? "Buscando..."
+                    : nomePessoa || "Informe a matrícula"}
+                </div>
               </div>
             </div>
 
