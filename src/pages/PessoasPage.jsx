@@ -36,25 +36,29 @@ export function PessoasPage() {
     carregar();
   }, [getValidAccessToken]);
 
-  const ativos = pessoas.filter((item) => Number(item.st_pessoa) === 1).length;
+  const ativos = pessoas.filter(
+    (item) => Number(item.situacao) === "DISPOSIÇÃO",
+  ).length;
 
   const columns = [
-    { key: "id_pessoa", label: "ID" },
-    { key: "mat_pessoa", label: "Matrícula" },
-    { key: "nm_pessoa", label: "Nome" },
-    { key: "ds_departamento", label: "Departamento" },
-    { key: "ds_posto_graduacao", label: "Posto/Graduação" },
-    { key: "ds_quadro", label: "Quadro" },
+    { key: "id", label: "ID" },
+    { key: "matr", label: "Matrícula" },
+    { key: "nome", label: "Nome" },
+    { key: "secao", label: "Departamento" },
+    { key: "grad", label: "Posto/Graduação" },
+    { key: "quadro", label: "Quadro" },
     {
-      key: "st_pessoa",
+      key: "situacao",
       label: "Status",
       render: (row) => (
         <span
           className={`status-badge ${
-            Number(row.st_pessoa) === 1 ? "status-active" : "status-inactive"
+            Number(row.situacao) === "DISPOSIÇÃO"
+              ? "status-active"
+              : "status-inactive"
           }`}
         >
-          {Number(row.st_pessoa) === 1 ? "Ativo" : "Inativo"}
+          {Number(row.situacao)}
         </span>
       ),
     },
