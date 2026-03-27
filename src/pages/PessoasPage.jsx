@@ -47,21 +47,7 @@ export function PessoasPage() {
     { key: "secao", label: "Departamento" },
     { key: "grad", label: "Posto/Graduação" },
     { key: "quadro", label: "Quadro" },
-    {
-      key: "situacao",
-      label: "Status",
-      render: (row) => (
-        <span
-          className={`status-badge ${
-            Number(row.situacao) === "DISPOSIÇÃO"
-              ? "status-active"
-              : "status-inactive"
-          }`}
-        >
-          {Number(row.situacao)}
-        </span>
-      ),
-    },
+    { key: "situacao", label: "Status" },
   ];
 
   return (
