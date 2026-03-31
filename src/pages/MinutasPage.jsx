@@ -166,7 +166,7 @@ export function MinutasPage() {
 
           <button
             className="table-action-button"
-            onClick={() => navigate(`/buscar-minuta/${row.id_minuta}`)}
+            onClick={() => navigate(`/minutas/buscar-minuta/${row.id_minuta}`)}
           >
             Detalhar
           </button>
