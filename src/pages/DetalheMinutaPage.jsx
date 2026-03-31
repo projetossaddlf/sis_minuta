@@ -174,10 +174,8 @@ export function DetalheMinutaPage() {
               </div>
 
               <div className="detail-item">
-                <span className="detail-label">Departamento</span>
-                <strong>
-                  {minuta.ds_departamento || minuta.id_departamento || "-"}
-                </strong>
+                <span className="detail-label">Unidade</span>
+                <strong>{minuta.sg_unidade || minuta.id_unidade || "-"}</strong>
               </div>
 
               <div className="detail-item">
@@ -207,7 +205,7 @@ export function DetalheMinutaPage() {
 
             <div className="text-card">
               <p>
-                MINUTA {minuta.ds_departamento} Nº {minuta.nu_minuta} - PARA
+                MINUTA {minuta.sg_minuta} Nº {minuta.nu_minuta} - PARA
                 PUBLICAÇÃO EM {minuta.tp_minuta === 0 ? "BCG" : "BRCG"}
               </p>
               <p>ATOS DO CHEFE DO DEPARTAMENTO DE LOGÍSTICA E FINANÇAS - DLF</p>

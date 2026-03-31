@@ -4,8 +4,7 @@ import { PageHeader } from "../components/PageHeader";
 import { useAuth } from "../auth/useAuth";
 import { apiFetch } from "../services/api";
 
-const API_LISTAR_DEPARTAMENTO = import.meta.env
-  .VITE_API_URL_LISTAR_DEPARTAMENTO;
+const API_LISTAR_UNIDADES = import.meta.env.VITE_API_URL_LISTAR_UNIDADES;
 const API_BUSCAR_MINUTA = import.meta.env.VITE_API_URL_BUSCAR_MINUTA;
 const API_ATUALIZAR_MINUTA = import.meta.env.VITE_API_URL_ATUALIZAR_MINUTA;
 
@@ -32,14 +31,14 @@ export function EditarMinutaPage() {
   const { id } = useParams();
   const { getValidAccessToken } = useAuth();
 
-  const [departamentos, setDepartamentos] = useState([]);
+  const [unidades, setUnidades] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [erro, setErro] = useState("");
 
   const [form, setForm] = useState({
     nu_minuta: "",
-    id_departamento: "",
+    id_unidade: "",
     tp_minuta: "0",
     st_minuta: "0",
     dt_abertura: "",
@@ -52,12 +51,8 @@ export function EditarMinutaPage() {
         setLoading(true);
         setErro("");
 
-        const [departamentosData, minutaData] = await Promise.all([
-          apiFetch(
-            API_LISTAR_DEPARTAMENTO,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
+        const [unidadesData, minutaData] = await Promise.all([
+          apiFetch(API_LISTAR_UNIDADES, { method: "GET" }, getValidAccessToken),
           apiFetch(
             `${API_BUSCAR_MINUTA}/${id}`,
             { method: "GET" },
@@ -65,14 +60,12 @@ export function EditarMinutaPage() {
           ),
         ]);
 
-        setDepartamentos(
-          Array.isArray(departamentosData) ? departamentosData : [],
-        );
+        setUnidades(Array.isArray(unidadesData) ? unidadesData : []);
 
         setForm({
           nu_minuta: minutaData?.nu_minuta || "",
-          id_departamento: minutaData?.id_departamento
-            ? String(minutaData.id_departamento)
+          id_unidade: minutaData?.id_unidade
+            ? String(minutaData.id_unidade)
             : "",
           tp_minuta:
             minutaData?.tp_minuta !== undefined &&
@@ -115,8 +108,8 @@ export function EditarMinutaPage() {
       return;
     }
 
-    if (!form.id_departamento) {
-      alert("Selecione o departamento.");
+    if (!form.id_unidade) {
+      alert("Selecione o Unidade.");
       return;
     }
 
@@ -131,7 +124,7 @@ export function EditarMinutaPage() {
 
       const payload = {
         nu_minuta: form.nu_minuta.trim(),
-        id_departamento: Number(form.id_departamento),
+        id_unidade: Number(form.id_unidade),
         tp_minuta: Number(form.tp_minuta),
         st_minuta: Number(form.st_minuta),
         dt_abertura: toDateTimeString(form.dt_abertura),
@@ -187,20 +180,17 @@ export function EditarMinutaPage() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="id_departamento">Departamento</label>
+              <label htmlFor="id_unidade">Unidade</label>
               <select
-                id="id_departamento"
-                name="id_departamento"
-                value={form.id_departamento}
+                id="id_unidade"
+                name="id_unidade"
+                value={form.id_unidade}
                 onChange={handleChange}
               >
                 <option value="">Selecione</option>
-                {departamentos.map((item) => (
-                  <option
-                    key={item.id_departamento}
-                    value={item.id_departamento}
-                  >
-                    {item.ds_departamento}
+                {unidades.map((item) => (
+                  <option key={item.id_unidade} value={item.id_unidade}>
+                    {item.sg_unidade}
                   </option>
                 ))}
               </select>

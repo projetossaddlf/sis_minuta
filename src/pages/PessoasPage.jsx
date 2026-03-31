@@ -44,7 +44,7 @@ export function PessoasPage() {
     { key: "id", label: "ID" },
     { key: "matr", label: "Matrícula" },
     { key: "nome", label: "Nome" },
-    { key: "secao", label: "Departamento" },
+    { key: "unidade", label: "Unidade" },
     { key: "grad", label: "Posto/Graduação" },
     { key: "quadro", label: "Quadro" },
     { key: "situacao", label: "Status" },

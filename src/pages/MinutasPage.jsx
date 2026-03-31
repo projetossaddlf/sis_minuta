@@ -6,10 +6,9 @@ import { DataTable } from "../components/DataTable";
 import { useAuth } from "../auth/useAuth";
 import { apiFetch } from "../services/api";
 
-const API_LISTAR_DEPARTAMENTO = import.meta.env
-  .VITE_API_URL_LISTAR_DEPARTAMENTO;
-const API_LISTAR_MINUTAS_DEPARTAMENTO = import.meta.env
-  .VITE_API_URL_LISTAR_MINUTAS_DEPARTAMENTO;
+const API_LISTAR_UNIDADES = import.meta.env.VITE_API_URL_LISTAR_UNIDADES;
+const API_LISTAR_MINUTAS_UNIDADE = import.meta.env
+  .VITE_API_URL_LISTAR_MINUTAS_UNIDADE;
 const API_EXCLUIR_MINUTA = import.meta.env.VITE_API_URL_EXCLUIR_MINUTA;
 
 function formatarData(data) {
@@ -49,40 +48,40 @@ export function MinutasPage() {
   const navigate = useNavigate();
   const { getValidAccessToken } = useAuth();
 
-  const [departamentos, setDepartamentos] = useState([]);
-  const [idDepartamento, setIdDepartamento] = useState("");
+  const [unidades, setUnidades] = useState([]);
+  const [idUnidade, setIdUnidade] = useState("");
   const [minutas, setMinutas] = useState([]);
-  const [loadingDepartamentos, setLoadingDepartamentos] = useState(true);
+  const [loadingUnidades, setLoadingUnidades] = useState(true);
   const [loadingMinutas, setLoadingMinutas] = useState(false);
   const [erro, setErro] = useState("");
 
   useEffect(() => {
-    async function carregarDepartamentos() {
+    async function carregarUnidades() {
       try {
-        setLoadingDepartamentos(true);
+        setLoadingUnidades(true);
         setErro("");
 
         const data = await apiFetch(
-          API_LISTAR_DEPARTAMENTO,
+          API_LISTAR_UNIDADES,
           { method: "GET" },
           getValidAccessToken,
         );
 
-        setDepartamentos(Array.isArray(data) ? data : []);
+        setUnidades(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error(error);
-        setErro(error.message || "Erro ao carregar departamentos");
+        setErro(error.message || "Erro ao carregar unidades");
       } finally {
-        setLoadingDepartamentos(false);
+        setLoadingUnidades(false);
       }
     }
 
-    carregarDepartamentos();
+    carregarUnidades();
   }, [getValidAccessToken]);
 
   useEffect(() => {
     async function carregarMinutas() {
-      if (!idDepartamento) {
+      if (!idUnidade) {
         setMinutas([]);
         return;
       }
@@ -92,7 +91,7 @@ export function MinutasPage() {
         setErro("");
 
         const data = await apiFetch(
-          `${API_LISTAR_MINUTAS_DEPARTAMENTO}/${idDepartamento}`,
+          `${API_LISTAR_MINUTAS_UNIDADE}/${idUnidade}`,
           { method: "GET" },
           getValidAccessToken,
         );
@@ -107,7 +106,7 @@ export function MinutasPage() {
     }
 
     carregarMinutas();
-  }, [idDepartamento, getValidAccessToken]);
+  }, [idUnidade, getValidAccessToken]);
 
   async function handleExcluirMinuta(idMinuta) {
     const confirmar = window.confirm(
@@ -134,9 +133,9 @@ export function MinutasPage() {
     { key: "id_minuta", label: "ID" },
     { key: "nu_minuta", label: "Número" },
     {
-      key: "ds_departamento",
-      label: "Departamento",
-      render: (row) => row.ds_departamento || row.id_departamento,
+      key: "sg_unidade",
+      label: "Unidade",
+      render: (row) => row.sg_unidade || row.id_unidade,
     },
     {
       key: "tp_minuta",
@@ -200,13 +199,12 @@ export function MinutasPage() {
       <div className="summary-grid">
         <SummaryCard label="Total de minutas" value={minutas.length} />
         <SummaryCard
-          label="Departamento selecionado"
+          label="Unidade Selecionada"
           value={
-            idDepartamento
-              ? departamentos.find(
-                  (item) =>
-                    String(item.id_departamento) === String(idDepartamento),
-                )?.ds_departamento || "-"
+            idUnidade
+              ? unidades.find(
+                  (item) => String(item.id_unidade) === String(idUnidade),
+                )?.sg_unidade || "-"
               : "-"
           }
         />
@@ -223,16 +221,16 @@ export function MinutasPage() {
         >
           <div style={{ minWidth: 280 }}>
             <label
-              htmlFor="departamento"
+              htmlFor="unidade"
               style={{ display: "block", marginBottom: 8, fontWeight: 600 }}
             >
-              Departamento
+              Unidade
             </label>
 
             <select
-              id="departamento"
-              value={idDepartamento}
-              onChange={(e) => setIdDepartamento(e.target.value)}
+              id="unidade"
+              value={idUnidade}
+              onChange={(e) => setIdUnidade(e.target.value)}
               style={{
                 width: "100%",
                 height: 42,
@@ -242,10 +240,10 @@ export function MinutasPage() {
                 background: "#fff",
               }}
             >
-              <option value="">Selecione um departamento</option>
-              {departamentos.map((item) => (
-                <option key={item.id_departamento} value={item.id_departamento}>
-                  {item.ds_departamento}
+              <option value="">Selecione uma unidade</option>
+              {unidades.map((item) => (
+                <option key={item.id_unidade} value={item.id_unidade}>
+                  {item.sg_unidade}
                 </option>
               ))}
             </select>
@@ -260,29 +258,29 @@ export function MinutasPage() {
         </div>
       </div>
 
-      {loadingDepartamentos && (
-        <div className="loading-text">Carregando departamentos...</div>
+      {loadingUnidades && (
+        <div className="loading-text">Carregando unidades...</div>
       )}
 
       {erro && <div className="error-text">{erro}</div>}
 
-      {!loadingDepartamentos && !erro && !idDepartamento && (
+      {!loadingUnidades && !erro && !idUnidade && (
         <div className="content-card">
           <div className="empty-text">
-            Selecione um departamento para listar as minutas.
+            Selecione uma unidade para listar as minutas.
           </div>
         </div>
       )}
 
-      {!loadingDepartamentos && !erro && idDepartamento && loadingMinutas && (
+      {!loadingUnidades && !erro && idUnidade && loadingMinutas && (
         <div className="loading-text">Carregando minutas...</div>
       )}
 
-      {!loadingDepartamentos && !erro && idDepartamento && !loadingMinutas && (
+      {!loadingUnidades && !erro && idUnidade && !loadingMinutas && (
         <DataTable
           columns={columns}
           data={minutas}
-          emptyMessage="Nenhuma minuta encontrada para o departamento selecionado."
+          emptyMessage="Nenhuma minuta encontrada para a unidade selecionada."
         />
       )}
     </div>

@@ -104,10 +104,8 @@ export function LancarDadosMinutaPage() {
               </div>
 
               <div className="detail-item">
-                <span className="detail-label">Departamento</span>
-                <strong>
-                  {minuta.ds_departamento || minuta.id_departamento || "-"}
-                </strong>
+                <span className="detail-label">Unidade</span>
+                <strong>{minuta.sg_unidade || minuta.sg_unidade || "-"}</strong>
               </div>
 
               <div className="detail-item">

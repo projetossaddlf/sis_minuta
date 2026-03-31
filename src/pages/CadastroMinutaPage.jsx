@@ -4,8 +4,7 @@ import { PageHeader } from "../components/PageHeader";
 import { useAuth } from "../auth/useAuth";
 import { apiFetch } from "../services/api";
 
-const API_LISTAR_DEPARTAMENTO = import.meta.env
-  .VITE_API_URL_LISTAR_DEPARTAMENTO;
+const API_LISTAR_UNIDADES = import.meta.env.VITE_API_URL_LISTAR_UNIDADES;
 const API_CADASTRAR_MINUTA = import.meta.env.VITE_API_URL_CADASTRAR_MINUTA;
 
 function hojeInputDate() {
@@ -25,14 +24,14 @@ export function CadastroMinutaPage() {
   const navigate = useNavigate();
   const { getValidAccessToken } = useAuth();
 
-  const [departamentos, setDepartamentos] = useState([]);
+  const [unidades, setUnidades] = useState([]);
   const [loadingCombos, setLoadingCombos] = useState(true);
   const [saving, setSaving] = useState(false);
   const [erro, setErro] = useState("");
 
   const [form, setForm] = useState({
     nu_minuta: "",
-    id_departamento: "",
+    id_unidade: "",
     tp_minuta: "0",
     st_minuta: "0",
     dt_abertura: hojeInputDate(),
@@ -46,15 +45,15 @@ export function CadastroMinutaPage() {
         setErro("");
 
         const data = await apiFetch(
-          API_LISTAR_DEPARTAMENTO,
+          API_LISTAR_UNIDADES,
           { method: "GET" },
           getValidAccessToken,
         );
 
-        setDepartamentos(Array.isArray(data) ? data : []);
+        setUnidades(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error(error);
-        setErro(error.message || "Erro ao carregar departamentos");
+        setErro(error.message || "Erro ao carregar unidades");
       } finally {
         setLoadingCombos(false);
       }
@@ -79,8 +78,8 @@ export function CadastroMinutaPage() {
       return;
     }
 
-    if (!form.id_departamento) {
-      alert("Selecione o departamento.");
+    if (!form.id_unidade) {
+      alert("Selecione a unidade.");
       return;
     }
 
@@ -95,7 +94,7 @@ export function CadastroMinutaPage() {
 
       const payload = {
         nu_minuta: form.nu_minuta.trim(),
-        id_departamento: Number(form.id_departamento),
+        id_unidade: Number(form.id_unidade),
         tp_minuta: Number(form.tp_minuta),
         st_minuta: Number(form.st_minuta),
         dt_abertura: toDateTimeString(form.dt_abertura),
@@ -152,20 +151,17 @@ export function CadastroMinutaPage() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="id_departamento">Departamento</label>
+              <label htmlFor="id_unidade">Unidade</label>
               <select
-                id="id_departamento"
-                name="id_departamento"
-                value={form.id_departamento}
+                id="id_unidade"
+                name="id_unidade"
+                value={form.id_unidade}
                 onChange={handleChange}
               >
                 <option value="">Selecione</option>
-                {departamentos.map((item) => (
-                  <option
-                    key={item.id_departamento}
-                    value={item.id_departamento}
-                  >
-                    {item.ds_departamento}
+                {unidades.map((item) => (
+                  <option key={item.id_unidade} value={item.id_unidade}>
+                    {item.sg_unidade}
                   </option>
                 ))}
               </select>
