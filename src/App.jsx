@@ -39,6 +39,10 @@ function AppRoutes() {
         <Route path="/minutas" element={<MinutasPage />} />
         <Route path="/minutas/nova" element={<CadastroMinutaPage />} />
         <Route path="/minutas/:id" element={<DetalheMinutaPage />} />
+        <Route
+          path="/minutas/buscar-minuta/:id"
+          element={<DetalharMinutaPage />}
+        />
         <Route path="/minutas/editar/:id" element={<EditarMinutaPage />} />
         <Route
           path="/minutas/lancar_dados/:id"
