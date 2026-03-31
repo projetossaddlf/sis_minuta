@@ -163,10 +163,16 @@ export function MinutasPage() {
           >
             Lançar Dados
           </button>
-
           <button
             className="table-action-button"
-            onClick={() => navigate(`/minutas/buscar-minuta/${row.id_minuta}`)}
+            onClick={() => {
+              if (!row.id_minuta) {
+                alert("ID da minuta não encontrado.");
+                return;
+              }
+
+              navigate(`/minutas/buscar-minuta/${row.id_minuta}`);
+            }}
           >
             Detalhar
           </button>

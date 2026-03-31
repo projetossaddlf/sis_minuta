@@ -92,37 +92,57 @@ export function DetalheMinutaPage() {
   const [registrosFerias, setRegistrosFerias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
+  const [erroRegistros, setErroRegistros] = useState("");
 
   useEffect(() => {
     async function carregar() {
+      if (!id || id === "undefined") {
+        setErro("ID da minuta inválido.");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setErro("");
+        setErroRegistros("");
+        setMinuta(null);
+        setRegistrosFerias([]);
 
-        const [dataMinuta, dataRegistros] = await Promise.all([
-          apiFetch(
-            `${API_BUSCAR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-        ]);
+        const dataMinuta = await apiFetch(
+          `${API_BUSCAR_MINUTA}/${id}`,
+          { method: "GET" },
+          getValidAccessToken,
+        );
 
         setMinuta(dataMinuta);
 
-        const lista = Array.isArray(dataRegistros?.registros)
-          ? dataRegistros.registros
-          : Array.isArray(dataRegistros)
-            ? dataRegistros
-            : [];
+        try {
+          const dataRegistros = await apiFetch(
+            `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          );
 
-        setRegistrosFerias(lista);
+          const lista = Array.isArray(dataRegistros?.registros)
+            ? dataRegistros.registros
+            : Array.isArray(dataRegistros)
+              ? dataRegistros
+              : [];
+
+          setRegistrosFerias(lista);
+        } catch (errorRegistros) {
+          console.error(
+            "Erro ao carregar registros de férias:",
+            errorRegistros,
+          );
+          setErroRegistros(
+            errorRegistros.message || "Erro ao carregar registros vinculados.",
+          );
+          setRegistrosFerias([]);
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Erro ao carregar minuta:", error);
         setErro(error.message || "Erro ao carregar minuta");
       } finally {
         setLoading(false);
@@ -136,7 +156,7 @@ export function DetalheMinutaPage() {
     <div>
       <PageHeader
         title="Detalhar Minuta"
-        subtitle={`Minuta gerada para ser anexada no SEI.`}
+        subtitle="Minuta gerada para ser anexada no SEI."
       />
 
       {loading && <div className="loading-text">Carregando minuta...</div>}
@@ -159,7 +179,7 @@ export function DetalheMinutaPage() {
                 <button
                   className="admin-button"
                   onClick={() =>
-                    navigate(`/minutas/editar/${minuta.nu_minuta}`)
+                    navigate(`/minutas/editar/${minuta.id_minuta}`)
                   }
                 >
                   Editar
@@ -168,6 +188,11 @@ export function DetalheMinutaPage() {
             </div>
 
             <div className="detail-info-grid">
+              <div className="detail-item">
+                <span className="detail-label">ID</span>
+                <strong>{minuta.id_minuta || "-"}</strong>
+              </div>
+
               <div className="detail-item">
                 <span className="detail-label">Número</span>
                 <strong>{minuta.nu_minuta || "-"}</strong>
@@ -203,10 +228,16 @@ export function DetalheMinutaPage() {
           <div className="content-card">
             <h2 className="detail-card-title">Minuta Gerada</h2>
 
+            {erroRegistros && (
+              <div className="error-text" style={{ marginBottom: 16 }}>
+                {erroRegistros}
+              </div>
+            )}
+
             <div className="text-card">
               <p>
-                MINUTA {minuta.sg_minuta} Nº {minuta.nu_minuta} - PARA
-                PUBLICAÇÃO EM {minuta.tp_minuta === 0 ? "BCG" : "BRCG"}
+                MINUTA Nº {minuta.nu_minuta || "-"} - PARA PUBLICAÇÃO EM{" "}
+                {Number(minuta.tp_minuta) === 0 ? "BCG" : "BRCG"}
               </p>
               <p>ATOS DO CHEFE DO DEPARTAMENTO DE LOGÍSTICA E FINANÇAS - DLF</p>
               <p>1ª PARTE – SERVIÇOS DIÁRIOS</p>
@@ -230,6 +261,7 @@ export function DetalheMinutaPage() {
               <p>Sem Alteração.</p>
               <p>2 - DE PRAÇAS</p>
               <p>A - FÉRIAS/ANTECIPAÇÃO</p>
+
               {registrosFerias.length === 0 ? (
                 <p>Sem Alteração.</p>
               ) : (
@@ -240,9 +272,9 @@ export function DetalheMinutaPage() {
                   >
                     <p>
                       {montarNomePessoa(item)}, Matrícula{" "}
-                      {item.mat_pessoa || "-"}, requer a Vossa Senhoria a
-                      antecipação de {item.qtd_dias_ferias || "-"} dias de
-                      férias regulamentares, referente ao exercício de{" "}
+                      {item.mat_pessoa || item.matr || "-"}, requer a Vossa
+                      Senhoria a antecipação de {item.qtd_dias_ferias || "-"}{" "}
+                      dias de férias regulamentares, referente ao exercício de{" "}
                       {item.ano_exercicio || "-"}, prevista para o mês de{" "}
                       {getNomeMes(item.mes_previsto)} de{" "}
                       {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
@@ -255,6 +287,7 @@ export function DetalheMinutaPage() {
                   </div>
                 ))
               )}
+
               <p>B - FÉRIAS/MARCAÇÃO</p>
               <p>Sem Alteração.</p>
               <p>C - FÉRIAS/REPROGRAMAÇÃO</p>
