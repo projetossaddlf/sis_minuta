@@ -262,7 +262,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
 
     const timer = setTimeout(() => {
       buscarPessoaPorMatricula();
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [form.mat_pessoa]);
