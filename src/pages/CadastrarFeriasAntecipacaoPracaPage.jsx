@@ -86,6 +86,28 @@ function montarNomePessoa(item) {
   );
 }
 
+function calcularDataFimFerias(dataInicio, qtdDias) {
+  if (!dataInicio || !qtdDias) return "";
+
+  const qtd = Number(qtdDias);
+
+  if (!Number.isFinite(qtd) || qtd <= 0) return "";
+
+  const inicio = new Date(`${dataInicio}T00:00:00`);
+  if (Number.isNaN(inicio.getTime())) return "";
+
+  const fim = new Date(inicio);
+
+  // Como o primeiro dia já conta, soma apenas qtdDias - 1
+  fim.setDate(fim.getDate() + (qtd - 1));
+
+  const yyyy = fim.getFullYear();
+  const mm = String(fim.getMonth() + 1).padStart(2, "0");
+  const dd = String(fim.getDate()).padStart(2, "0");
+
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 export function CadastrarFeriasAntecipacaoPracaPage() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -119,15 +141,26 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
   function handleChange(event) {
     const { name, value } = event.target;
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => {
+      const novoForm = {
+        ...prev,
+        [name]: value,
+      };
 
-    if (name === "matr") {
-      setNomePessoa("");
-      setIdPessoaEncontrada(null);
-    }
+      if (name === "matr") {
+        setNomePessoa("");
+        setIdPessoaEncontrada(null);
+      }
+
+      if (name === "qtd_dias_ferias" || name === "dt_inicio_periodo") {
+        novoForm.dt_fim_periodo = calcularDataFimFerias(
+          name === "dt_inicio_periodo" ? value : novoForm.dt_inicio_periodo,
+          name === "qtd_dias_ferias" ? value : novoForm.qtd_dias_ferias,
+        );
+      }
+
+      return novoForm;
+    });
   }
 
   async function carregarRegistros() {
