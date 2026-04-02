@@ -45,7 +45,7 @@ function getMesAtual() {
 
 function getFormInicial() {
   return {
-    mat_pessoa: "",
+    matr: "",
     qtd_dias_ferias: "",
     ano_exercicio: getAnoAtual(),
     mes_previsto: getMesAtual(),
@@ -72,6 +72,18 @@ function formatarData(data) {
 function getNomeMes(mes) {
   const encontrado = MESES.find((item) => Number(item.value) === Number(mes));
   return encontrado ? encontrado.label : "-";
+}
+
+function montarNomePessoa(item) {
+  return (
+    item.nome_completo ||
+    [item.grad, item.quadro, item.nome].filter(Boolean).join(" ").trim() ||
+    item.nome ||
+    item.nome_pessoa ||
+    item.ds_pessoa ||
+    item.matr ||
+    "-"
+  );
 }
 
 export function CadastrarFeriasAntecipacaoPracaPage() {
@@ -112,7 +124,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
       [name]: value,
     }));
 
-    if (name === "mat_pessoa") {
+    if (name === "matr") {
       setNomePessoa("");
       setIdPessoaEncontrada(null);
     }
@@ -143,7 +155,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
   }
 
   async function buscarPessoaPorMatricula() {
-    const matricula = form.mat_pessoa?.trim();
+    const matricula = form.matr?.trim();
 
     if (!matricula) {
       setNomePessoa("");
@@ -157,17 +169,13 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
       const url = `${API_BUSCAR_PESSOA_POR_MATRICULA}/${encodeURIComponent(matricula)}`;
       const data = await apiFetch(url, { method: "GET" }, getValidAccessToken);
 
-      const nomeMontado = [
-        data?.ds_posto_graduacao,
-        data?.ds_quadro,
-        data?.nm_pessoa,
-      ]
+      const nomeMontado = [data?.grad, data?.quadro, data?.nome]
         .filter(Boolean)
         .join(" ")
         .trim();
 
       setNomePessoa(nomeMontado || "Pessoa não encontrada");
-      setIdPessoaEncontrada(data?.id_pessoa || null);
+      setIdPessoaEncontrada(data?.id || null);
     } catch (error) {
       console.error("Erro ao buscar pessoa:", error);
       setNomePessoa("Pessoa não encontrada");
@@ -184,7 +192,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
     setIdRegistroEdicao(item.id_ferias_antecipacao_praca || null);
 
     setForm({
-      mat_pessoa: item.mat_pessoa || "",
+      matr: item.matr || "",
       qtd_dias_ferias: item.qtd_dias_ferias || "",
       ano_exercicio: item.ano_exercicio || getAnoAtual(),
       mes_previsto: item.mes_previsto || getMesAtual(),
@@ -196,19 +204,8 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
       nu_deferimento_sei: item.nu_deferimento_sei || "",
     });
 
-    const nomeMontado =
-      item.nome_completo ||
-      [item.ds_posto_graduacao, item.ds_quadro, item.nm_pessoa]
-        .filter(Boolean)
-        .join(" ")
-        .trim() ||
-      item.nm_pessoa ||
-      item.nome_pessoa ||
-      item.ds_pessoa ||
-      "";
-
-    setNomePessoa(nomeMontado);
-    setIdPessoaEncontrada(item.id_pessoa || null);
+    setNomePessoa(montarNomePessoa(item));
+    setIdPessoaEncontrada(item.id || null);
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -252,7 +249,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
   }, [idMinuta]);
 
   useEffect(() => {
-    const matricula = form.mat_pessoa?.trim();
+    const matricula = form.matr?.trim();
 
     if (!matricula || matricula.length < 3) {
       setNomePessoa("");
@@ -265,7 +262,7 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [form.mat_pessoa]);
+  }, [form.matr]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -281,8 +278,8 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
       }
 
       const payload = {
-        id_pessoa: Number(idPessoaEncontrada),
-        mat_pessoa: form.mat_pessoa,
+        id: idPessoaEncontrada,
+        matr: form.matr,
         qtd_dias_ferias: Number(form.qtd_dias_ferias),
         ano_exercicio: Number(form.ano_exercicio),
         mes_previsto: Number(form.mes_previsto),
@@ -360,12 +357,12 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
           <form onSubmit={handleSubmit} className="form-grid">
             <div className="form-row-2">
               <div className="form-group">
-                <label htmlFor="mat_pessoa">Matrícula</label>
+                <label htmlFor="matr">Matrícula</label>
                 <input
-                  id="mat_pessoa"
-                  name="mat_pessoa"
+                  id="matr"
+                  name="matr"
                   type="text"
-                  value={form.mat_pessoa}
+                  value={form.matr}
                   onChange={handleChange}
                   required
                 />
@@ -567,25 +564,11 @@ export function CadastrarFeriasAntecipacaoPracaPage() {
                     <tr
                       key={
                         item.id_ferias_antecipacao_praca ||
-                        `${item.mat_pessoa}-${item.dt_inicio_periodo}`
+                        `${item.matr}-${item.dt_inicio_periodo}`
                       }
                     >
-                      <td>{item.mat_pessoa || "-"}</td>
-                      <td>
-                        {item.nome_completo ||
-                          [
-                            item.ds_posto_graduacao,
-                            item.ds_quadro,
-                            item.nm_pessoa,
-                          ]
-                            .filter(Boolean)
-                            .join(" ")
-                            .trim() ||
-                          item.nm_pessoa ||
-                          item.nome_pessoa ||
-                          item.ds_pessoa ||
-                          "-"}
-                      </td>
+                      <td>{item.matr || "-"}</td>
+                      <td>{montarNomePessoa(item)}</td>
                       <td>{item.qtd_dias_ferias || "-"}</td>
                       <td>{item.ano_exercicio || "-"}</td>
                       <td>{getNomeMes(item.mes_previsto)}</td>
