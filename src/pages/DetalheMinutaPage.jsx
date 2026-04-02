@@ -274,7 +274,7 @@ export function DetalheMinutaPage() {
                 MINUTA Nº {minuta.nu_minuta || "-"} - PARA PUBLICAÇÃO EM{" "}
                 {Number(minuta.tp_minuta) === 0 ? "BCG" : "BRCG"}
               </p>
-              <p>ATOS DO CHEFE DO DEPARTAMENTO DE LOGÍSTICA E FINANÇAS - DLF</p>
+              <p>ATOS DO CHEFE DO {minuta.sg_unidade}</p>
               <p>1ª PARTE – SERVIÇOS DIÁRIOS</p>
               <p>Sem Alteração.</p>
               <p>2ª PARTE – ENSINO E INSTRUÇÃO</p>
