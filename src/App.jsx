@@ -8,6 +8,7 @@ import { CadastroMinutaPage } from "./pages/CadastroMinutaPage";
 import { EditarMinutaPage } from "./pages/EditarMinutaPage";
 import { LancarDadosMinutaPage } from "./pages/LancarDadosMinutaPage";
 import { CadastrarFeriasAntecipacaoPracaPage } from "./pages/CadastrarFeriasAntecipacaoPracaPage";
+import { CadastrarFeriasAntecipacaoOficialPage } from "./pages/CadastrarFeriasAntecipacaoOficialPage";
 import { DetalheMinutaPage } from "./pages/DetalheMinutaPage";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { useAuth } from "./auth/useAuth";
@@ -51,6 +52,10 @@ function AppRoutes() {
         <Route
           path="/minutas/:id/ferias-antecipacao-praca"
           element={<CadastrarFeriasAntecipacaoPracaPage />}
+        />
+        <Route
+          path="/minutas/:id/ferias-antecipacao-oficial"
+          element={<CadastrarFeriasAntecipacaoOficialPage />}
         />
         <Route path="/pessoas" element={<PessoasPage />} />
       </Route>

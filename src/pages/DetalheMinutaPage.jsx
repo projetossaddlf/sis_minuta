@@ -8,6 +8,9 @@ const API_BUSCAR_MINUTA = import.meta.env.VITE_API_URL_BUSCAR_MINUTA;
 const API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA = import.meta.env
   .VITE_API_URL_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA;
 
+const API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA;
+
 function formatarData(data) {
   if (!data) return "-";
 
@@ -117,6 +120,12 @@ export function DetalheMinutaPage() {
         try {
           const dataRegistros = await apiFetch(
             `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          );
+
+          const dataRegistrosOficial = await apiFetch(
+            `${API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA}/${id}`,
             { method: "GET" },
             getValidAccessToken,
           );

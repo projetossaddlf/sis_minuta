@@ -129,6 +129,17 @@ export function LancarDadosMinutaPage() {
               <button
                 className="admin-button"
                 onClick={() =>
+                  navigate(`/minutas/${id}/ferias-antecipacao-oficial`)
+                }
+              >
+                Lançar Dados Férias Antecipação - Oficial
+              </button>
+            </div>
+
+            <div className="actions-grid">
+              <button
+                className="admin-button"
+                onClick={() =>
                   navigate(`/minutas/${id}/ferias-antecipacao-praca`)
                 }
               >
