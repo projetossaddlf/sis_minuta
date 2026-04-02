@@ -11,6 +11,9 @@ const API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA = import.meta.env
 const API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA = import.meta.env
   .VITE_API_URL_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA;
 
+const API_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA;
+
 function formatarData(data) {
   if (!data) return "-";
 
@@ -91,6 +94,7 @@ export function DetalheMinutaPage() {
   const [minuta, setMinuta] = useState(null);
   const [registrosFerias, setRegistrosFerias] = useState([]);
   const [registrosFeriasOficial, setRegistrosFeriasOficial] = useState([]);
+  const [registrosFeriasCivil, setRegistrosFeriasCivil] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
   const [erroRegistros, setErroRegistros] = useState("");
@@ -110,6 +114,7 @@ export function DetalheMinutaPage() {
         setMinuta(null);
         setRegistrosFerias([]);
         setRegistrosFeriasOficial([]);
+        setRegistrosFeriasCivil([]);
 
         const dataMinuta = await apiFetch(
           `${API_BUSCAR_MINUTA}/${id}`,
@@ -132,6 +137,12 @@ export function DetalheMinutaPage() {
             getValidAccessToken,
           );
 
+          const dataRegistrosCivil = await apiFetch(
+            `${API_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          );
+
           const lista = Array.isArray(dataRegistros?.registros)
             ? dataRegistros.registros
             : Array.isArray(dataRegistros)
@@ -147,6 +158,14 @@ export function DetalheMinutaPage() {
               : [];
 
           setRegistrosFeriasOficial(listaOficial);
+
+          const listaCivil = Array.isArray(dataRegistrosCivil?.registros)
+            ? dataRegistrosCivil.registros
+            : Array.isArray(dataRegistrosCivil)
+              ? dataRegistrosCivil
+              : [];
+
+          setRegistrosFeriasCivil(listaCivil);
         } catch (errorRegistros) {
           console.error(
             "Erro ao carregar registros de férias:",
@@ -311,6 +330,42 @@ export function DetalheMinutaPage() {
                 registrosFerias.map((item, index) => (
                   <div
                     key={item.id_ferias_antecipacao_praca || index}
+                    style={{ marginBottom: "16px" }}
+                  >
+                    <p>
+                      {montarNomePessoa(item)}, Matrícula{" "}
+                      {item.mat_pessoa || item.matr || "-"}, requer a Vossa
+                      Senhoria a antecipação de {item.qtd_dias_ferias || "-"}{" "}
+                      dias de férias regulamentares, referente ao exercício de{" "}
+                      {item.ano_exercicio || "-"}, prevista para o mês de{" "}
+                      {getNomeMes(item.mes_previsto)} de{" "}
+                      {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
+                      {formatarData(item.dt_inicio_periodo)} a{" "}
+                      {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
+                      {item.nu_requerimento_sei || "-"}. Deferido em{" "}
+                      {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
+                      {item.nu_deferimento_sei || "-"}.
+                    </p>
+                  </div>
+                ))
+              )}
+
+              <p>B - FÉRIAS/MARCAÇÃO</p>
+              <p>Sem Alteração.</p>
+              <p>C - FÉRIAS/REPROGRAMAÇÃO</p>
+              <p>Sem Alteração.</p>
+              <p>D - ABONO DE PONTO ANUAL</p>
+              <p>Sem Alteração.</p>
+
+              <p>3 - FUNCIONÁRIOS CIVIS</p>
+              <p>A - FÉRIAS/ANTECIPAÇÃO</p>
+
+              {registrosFeriasCivil.length === 0 ? (
+                <p>Sem Alteração.</p>
+              ) : (
+                registrosFeriasCivil.map((item, index) => (
+                  <div
+                    key={item.id_ferias_antecipacao_civil || index}
                     style={{ marginBottom: "16px" }}
                   >
                     <p>
