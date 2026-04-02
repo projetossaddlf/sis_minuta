@@ -93,13 +93,11 @@ function calcularDataFimFerias(dataInicio, qtdDias) {
 
   if (!Number.isFinite(qtd) || qtd <= 0) return "";
 
-  const inicio = new Date(`${dataInicio}T00:00:00`);
-  if (Number.isNaN(inicio.getTime())) return "";
+  const [ano, mes, dia] = String(dataInicio).split("-").map(Number);
+  const fim = new Date(ano, mes - 1, dia);
 
-  const fim = new Date(inicio);
-
-  // Como o primeiro dia já conta, soma apenas qtdDias - 1
-  fim.setDate(fim.getDate() + (qtd - 1));
+  const diasParaSomar = qtd === 1 ? 0 : qtd - 2;
+  fim.setDate(fim.getDate() + diasParaSomar);
 
   const yyyy = fim.getFullYear();
   const mm = String(fim.getMonth() + 1).padStart(2, "0");
