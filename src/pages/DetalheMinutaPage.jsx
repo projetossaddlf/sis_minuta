@@ -90,6 +90,7 @@ export function DetalheMinutaPage() {
 
   const [minuta, setMinuta] = useState(null);
   const [registrosFerias, setRegistrosFerias] = useState([]);
+  const [registrosFeriasOficial, setRegistrosFeriasOficial] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
   const [erroRegistros, setErroRegistros] = useState("");
@@ -108,6 +109,7 @@ export function DetalheMinutaPage() {
         setErroRegistros("");
         setMinuta(null);
         setRegistrosFerias([]);
+        setRegistrosFeriasOficial([]);
 
         const dataMinuta = await apiFetch(
           `${API_BUSCAR_MINUTA}/${id}`,
@@ -137,6 +139,14 @@ export function DetalheMinutaPage() {
               : [];
 
           setRegistrosFerias(lista);
+
+          const listaOficial = Array.isArray(dataRegistrosOficial?.registros)
+            ? dataRegistrosOficial.registros
+            : Array.isArray(dataRegistrosOficial)
+              ? dataRegistrosOficial
+              : [];
+
+          setRegistrosFeriasOficial(listaOficial);
         } catch (errorRegistros) {
           console.error(
             "Erro ao carregar registros de férias:",
@@ -258,6 +268,33 @@ export function DetalheMinutaPage() {
               <p>(B) DESPACHOS EM REQUERIMENTOS</p>
               <p>1 - DE OFICIAIS</p>
               <p>A - FÉRIAS/ANTECIPAÇÃO</p>
+
+              {registrosFeriasOficial.length === 0 ? (
+                <p>Sem Alteração.</p>
+              ) : (
+                registrosFeriasOficial.map((item, index) => (
+                  <div
+                    key={item.id_ferias_antecipacao_oficial || index}
+                    style={{ marginBottom: "16px" }}
+                  >
+                    <p>
+                      {montarNomePessoa(item)}, Matrícula{" "}
+                      {item.mat_pessoa || item.matr || "-"}, requer a Vossa
+                      Senhoria a antecipação de {item.qtd_dias_ferias || "-"}{" "}
+                      dias de férias regulamentares, referente ao exercício de{" "}
+                      {item.ano_exercicio || "-"}, prevista para o mês de{" "}
+                      {getNomeMes(item.mes_previsto)} de{" "}
+                      {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
+                      {formatarData(item.dt_inicio_periodo)} a{" "}
+                      {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
+                      {item.nu_requerimento_sei || "-"}. Deferido em{" "}
+                      {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
+                      {item.nu_deferimento_sei || "-"}.
+                    </p>
+                  </div>
+                ))
+              )}
+
               <p>Sem Alteração.</p>
               <p>B - FÉRIAS/MARCAÇÃO</p>
               <p>Sem Alteração.</p>
