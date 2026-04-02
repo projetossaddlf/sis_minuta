@@ -360,7 +360,7 @@ export function CadastrarFeriasAntecipacaoOficialPage() {
   return (
     <div>
       <PageHeader
-        title="Férias Antecipação - Praça"
+        title="Férias Antecipação - Oficial"
         subtitle={`Lançamento vinculado à minuta ${nuMinuta || `#${idMinuta}`}`}
       />
 
