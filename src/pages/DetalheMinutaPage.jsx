@@ -71,14 +71,11 @@ function getNomeMes(mes) {
 function montarNomePessoa(item) {
   return (
     item.nome_completo ||
-    [item.ds_posto_graduacao, item.ds_quadro, item.nm_pessoa]
-      .filter(Boolean)
-      .join(" ")
-      .trim() ||
-    item.nm_pessoa ||
+    [item.grad, item.quadro, item.nome].filter(Boolean).join(" ").trim() ||
+    item.nome ||
     item.nome_pessoa ||
     item.ds_pessoa ||
-    item.mat_pessoa ||
+    item.matr ||
     "-"
   );
 }
