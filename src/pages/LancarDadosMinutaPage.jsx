@@ -162,6 +162,28 @@ export function LancarDadosMinutaPage() {
               <button
                 className="admin-button"
                 onClick={() =>
+                  navigate(`/minutas/${id}/ferias-reprogramacao-oficial`)
+                }
+              >
+                Lançar Dados Férias Reprogramação - Oficial
+              </button>
+            </div>
+
+            <div className="actions-grid">
+              <button
+                className="admin-button"
+                onClick={() =>
+                  navigate(`/minutas/${id}/ferias-reprogramacao-praca`)
+                }
+              >
+                Lançar Dados Férias Reprogramação - Praça
+              </button>
+            </div>
+
+            <div className="actions-grid">
+              <button
+                className="admin-button"
+                onClick={() =>
                   navigate(`/minutas/${id}/ferias-reprogramacao-civil`)
                 }
               >
