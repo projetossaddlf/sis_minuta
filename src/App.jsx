@@ -14,6 +14,9 @@ import { CadastrarFeriasReprogramacaoOficialPage } from "./pages/CadastrarFerias
 import { CadastrarFeriasReprogramacaoPracaPage } from "./pages/CadastrarFeriasReprogramacaoPracaPage";
 import { CadastrarFeriasReprogramacaoCivilPage } from "./pages/CadastrarFeriasReprogramacaoCivilPage";
 import { CadastrarFeriasMarcacaoOficialPage } from "./pages/CadastrarFeriasMarcacaoOficialPage";
+import { CadastrarFeriasMarcacaoPracaPage } from "./pages/CadastrarFeriasMarcacaoPracaPage";
+import { CadastrarFeriasMarcacaoCivilPage } from "./pages/CadastrarFeriasMarcacaoCivilPage";
+
 import { DetalheMinutaPage } from "./pages/DetalheMinutaPage";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { useAuth } from "./auth/useAuth";
@@ -81,6 +84,14 @@ function AppRoutes() {
         <Route
           path="/minutas/:id/ferias-marcacao-oficial"
           element={<CadastrarFeriasMarcacaoOficialPage />}
+        />
+        <Route
+          path="/minutas/:id/ferias-marcacao-praca"
+          element={<CadastrarFeriasMarcacaoPracaPage />}
+        />
+        <Route
+          path="/minutas/:id/ferias-marcacao-civil"
+          element={<CadastrarFeriasMarcacaoCivilPage />}
         />
         <Route path="/pessoas" element={<PessoasPage />} />
       </Route>

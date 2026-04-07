@@ -201,6 +201,24 @@ export function LancarDadosMinutaPage() {
                 Lançar Dados Férias Marcação - Oficial
               </button>
             </div>
+
+            <div className="actions-grid">
+              <button
+                className="admin-button"
+                onClick={() => navigate(`/minutas/${id}/ferias-marcacao-praca`)}
+              >
+                Lançar Dados Férias Marcação - Praça
+              </button>
+            </div>
+
+            <div className="actions-grid">
+              <button
+                className="admin-button"
+                onClick={() => navigate(`/minutas/${id}/ferias-marcacao-civil`)}
+              >
+                Lançar Dados Férias Marcação - Civil
+              </button>
+            </div>
           </div>
         </div>
       )}
