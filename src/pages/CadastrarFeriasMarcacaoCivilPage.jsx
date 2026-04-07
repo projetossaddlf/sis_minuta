@@ -85,7 +85,7 @@ function montarNomePessoa(item) {
   );
 }
 
-export function CadastrarFeriasMarcacaoPracaPage() {
+export function CadastrarFeriasMarcacaoCivilPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { getValidAccessToken } = useAuth();
