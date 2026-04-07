@@ -314,7 +314,6 @@ export function DetalheMinutaPage() {
                 ))
               )}
 
-              <p>Sem Alteração.</p>
               <p>B - FÉRIAS/MARCAÇÃO</p>
               <p>Sem Alteração.</p>
               <p>C - FÉRIAS/REPROGRAMAÇÃO</p>
