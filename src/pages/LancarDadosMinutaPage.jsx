@@ -157,6 +157,17 @@ export function LancarDadosMinutaPage() {
                 Lançar Dados Férias Antecipação - F. Civil
               </button>
             </div>
+
+            <div className="actions-grid">
+              <button
+                className="admin-button"
+                onClick={() =>
+                  navigate(`/minutas/${id}/ferias-reprogramacao-civil`)
+                }
+              >
+                Lançar Dados Férias Reprogramação - F. Civil
+              </button>
+            </div>
           </div>
         </div>
       )}
