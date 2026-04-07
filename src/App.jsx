@@ -79,7 +79,7 @@ function AppRoutes() {
           element={<CadastrarFeriasReprogramacaoCivilPage />}
         />
         <Route
-          path="/minutas/:id/ferias-macacao-oficial"
+          path="/minutas/:id/ferias-marcacao-oficial"
           element={<CadastrarFeriasMarcacaoOficialPage />}
         />
         <Route path="/pessoas" element={<PessoasPage />} />

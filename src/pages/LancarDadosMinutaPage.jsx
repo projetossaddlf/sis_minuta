@@ -162,7 +162,7 @@ export function LancarDadosMinutaPage() {
               <button
                 className="admin-button"
                 onClick={() =>
-                  navigate(`/minutas/${id}/ferias-reprogramacao-oficial`)
+                  navigate(`/minutas/${id}/ferias-marcacao-oficial`)
                 }
               >
                 Lançar Dados Férias Reprogramação - Oficial
@@ -195,7 +195,7 @@ export function LancarDadosMinutaPage() {
               <button
                 className="admin-button"
                 onClick={() =>
-                  navigate(`/minutas/${id}/ferias-marcacao-oficial`)
+                  navigate(`/minutas/${id}/ferias-reprogramacao-oficial`)
                 }
               >
                 Lançar Dados Férias Marcação - Oficial
