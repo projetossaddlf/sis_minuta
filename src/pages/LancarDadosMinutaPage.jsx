@@ -105,7 +105,7 @@ export function LancarDadosMinutaPage() {
 
               <div className="detail-item">
                 <span className="detail-label">Unidade</span>
-                <strong>{minuta.sg_unidade || minuta.sg_unidade || "-"}</strong>
+                <strong>{minuta.sg_unidade || "-"}</strong>
               </div>
 
               <div className="detail-item">
@@ -125,99 +125,99 @@ export function LancarDadosMinutaPage() {
               <h2 className="detail-card-title">Lançamentos da Minuta</h2>
             </div>
 
-            <div className="actions-grid">
-              <button
-                className="admin-button"
-                onClick={() =>
-                  navigate(`/minutas/${id}/ferias-antecipacao-oficial`)
-                }
-              >
-                Lançar Dados Férias Antecipação - Oficial
-              </button>
-            </div>
+            <div className="lancamentos-grid-3">
+              <div className="lancamento-col">
+                <h3 className="lancamento-title">Férias Marcação</h3>
 
-            <div className="actions-grid">
-              <button
-                className="admin-button"
-                onClick={() =>
-                  navigate(`/minutas/${id}/ferias-antecipacao-praca`)
-                }
-              >
-                Lançar Dados Férias Antecipação - Praça
-              </button>
-            </div>
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-marcacao-oficial`)
+                  }
+                >
+                  Oficial
+                </button>
 
-            <div className="actions-grid">
-              <button
-                className="admin-button"
-                onClick={() =>
-                  navigate(`/minutas/${id}/ferias-antecipacao-civil`)
-                }
-              >
-                Lançar Dados Férias Antecipação - F. Civil
-              </button>
-            </div>
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-marcacao-praca`)
+                  }
+                >
+                  Praça
+                </button>
 
-            <div className="actions-grid">
-              <button
-                className="admin-button"
-                onClick={() =>
-                  navigate(`/minutas/${id}/ferias-reprogramacao-oficial`)
-                }
-              >
-                Lançar Dados Férias Reprogramação - Oficial
-              </button>
-            </div>
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-marcacao-civil`)
+                  }
+                >
+                  Civil
+                </button>
+              </div>
 
-            <div className="actions-grid">
-              <button
-                className="admin-button"
-                onClick={() =>
-                  navigate(`/minutas/${id}/ferias-reprogramacao-praca`)
-                }
-              >
-                Lançar Dados Férias Reprogramação - Praça
-              </button>
-            </div>
+              <div className="lancamento-col">
+                <h3 className="lancamento-title">Férias Reprogramação</h3>
 
-            <div className="actions-grid">
-              <button
-                className="admin-button"
-                onClick={() =>
-                  navigate(`/minutas/${id}/ferias-reprogramacao-civil`)
-                }
-              >
-                Lançar Dados Férias Reprogramação - F. Civil
-              </button>
-            </div>
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-reprogramacao-oficial`)
+                  }
+                >
+                  Oficial
+                </button>
 
-            <div className="actions-grid">
-              <button
-                className="admin-button"
-                onClick={() =>
-                  navigate(`/minutas/${id}/ferias-marcacao-oficial`)
-                }
-              >
-                Lançar Dados Férias Marcação - Oficial
-              </button>
-            </div>
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-reprogramacao-praca`)
+                  }
+                >
+                  Praça
+                </button>
 
-            <div className="actions-grid">
-              <button
-                className="admin-button"
-                onClick={() => navigate(`/minutas/${id}/ferias-marcacao-praca`)}
-              >
-                Lançar Dados Férias Marcação - Praça
-              </button>
-            </div>
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-reprogramacao-civil`)
+                  }
+                >
+                  Civil
+                </button>
+              </div>
 
-            <div className="actions-grid">
-              <button
-                className="admin-button"
-                onClick={() => navigate(`/minutas/${id}/ferias-marcacao-civil`)}
-              >
-                Lançar Dados Férias Marcação - Civil
-              </button>
+              <div className="lancamento-col">
+                <h3 className="lancamento-title">Férias Antecipação</h3>
+
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-antecipacao-oficial`)
+                  }
+                >
+                  Oficial
+                </button>
+
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-antecipacao-praca`)
+                  }
+                >
+                  Praça
+                </button>
+
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-antecipacao-civil`)
+                  }
+                >
+                  F. Civil
+                </button>
+              </div>
             </div>
           </div>
         </div>

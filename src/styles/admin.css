@@ -537,3 +537,34 @@ a {
 .icon-action-button.danger:hover {
   background-color: #fee2e2;
 }
+
+.lancamentos-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.lancamento-col {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lancamento-title {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+}
+
+@media (max-width: 900px) {
+  .lancamentos-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
