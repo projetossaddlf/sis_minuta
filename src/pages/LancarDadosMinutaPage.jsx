@@ -125,7 +125,7 @@ export function LancarDadosMinutaPage() {
               <h2 className="detail-card-title">Lançamentos da Minuta</h2>
             </div>
 
-            <div className="lancamentos-grid-3">
+            <div className="lancamentos-grid-4">
               <div className="lancamento-col">
                 <h3 className="lancamento-title">Férias Marcação</h3>
 
@@ -214,6 +214,31 @@ export function LancarDadosMinutaPage() {
                   onClick={() =>
                     navigate(`/minutas/${id}/ferias-antecipacao-civil`)
                   }
+                >
+                  F. Civil
+                </button>
+              </div>
+
+              <div className="lancamento-col">
+                <h3 className="lancamento-title">Abono de Ponto</h3>
+
+                <button
+                  className="admin-button"
+                  onClick={() => navigate(`/minutas/${id}/abono-oficial`)}
+                >
+                  Oficial
+                </button>
+
+                <button
+                  className="admin-button"
+                  onClick={() => navigate(`/minutas/${id}/abono-praca`)}
+                >
+                  Praça
+                </button>
+
+                <button
+                  className="admin-button"
+                  onClick={() => navigate(`/minutas/${id}/abono-civil`)}
                 >
                   F. Civil
                 </button>
