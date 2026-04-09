@@ -33,15 +33,6 @@ const API_LISTAR_FERIAS_MARCACAO_OFICIAL_POR_MINUTA = import.meta.env
 const API_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA = import.meta.env
   .VITE_API_URL_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA;
 
-const API_LISTAR_ABONO_OFICIAL_POR_MINUTA = import.meta.env
-  .VITE_API_URL_LISTAR_ABONO_OFICIAL_POR_MINUTA;
-
-const API_LISTAR_ABONO_PRACA_POR_MINUTA = import.meta.env
-  .VITE_API_URL_LISTAR_ABONO_PRACA_POR_MINUTA;
-
-const API_LISTAR_ABONO_CIVIL_POR_MINUTA = import.meta.env
-  .VITE_API_URL_LISTAR_ABONO_CIVIL_POR_MINUTA;
-
 function formatarData(data) {
   if (!data) return "-";
 
@@ -137,10 +128,10 @@ function renderBlocoAntecipacao(lista, tipoIdField) {
         {montarNomePessoa(item)}, Matrícula{" "}
         {item.mat_pessoa || item.matr || "-"}, requer a Vossa Senhoria a
         antecipação de {item.qtd_dias_ferias || "-"} dias de férias
-        regulamentares, referente ao exercício de {item.ano_exercicio || "-"},
-        prevista para o mês de {getNomeMes(item.mes_previsto)} de{" "}
-        {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
-        {formatarData(item.dt_inicio_periodo)} a{" "}
+        regulamentares, relativas ao exercício de {item.ano_exercicio || "-"},
+        previstas no Calendário de férias para o mês de{" "}
+        {getNomeMes(item.mes_previsto)} de {item.ano_previsto || "-"}, a serem
+        gozadas no período de {formatarData(item.dt_inicio_periodo)} a{" "}
         {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
         {item.nu_requerimento_sei || "-"}. Deferido em{" "}
         {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
@@ -181,32 +172,11 @@ function renderBlocoMarcacao(lista, tipoIdField) {
     <div key={item[tipoIdField] || index} style={{ marginBottom: "16px" }}>
       <p>
         {montarNomePessoa(item)}, Matrícula{" "}
-        {item.mat_pessoa || item.matr || "-"}, terá férias regulamentares,
-        referente ao exercício de {item.ano_exercicio || "-"}, prevista para o
-        mês de {getNomeMes(item.mes_previsto)} de {item.ano_previsto || "-"}, a
-        serem gozadas no período de {formatarData(item.dt_inicio_periodo)} a{" "}
-        {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
-        {item.nu_requerimento_sei || "-"}. Deferido em{" "}
-        {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
-        {item.nu_deferimento_sei || "-"}.
-      </p>
-    </div>
-  ));
-}
-
-function renderBlocoAbono(lista, tipoIdField) {
-  if (!lista || lista.length === 0) {
-    return <p>Sem Alteração.</p>;
-  }
-
-  return lista.map((item, index) => (
-    <div key={item[tipoIdField] || index} style={{ marginBottom: "16px" }}>
-      <p>
-        {montarNomePessoa(item)}, Matrícula{" "}
-        {item.mat_pessoa || item.matr || "-"}, terá abono de ponto anual de{" "}
-        {item.qtd_dias_abono || "-"} dias, referente ao exercício de{" "}
-        {item.ano_exercicio || "-"}, a serem gozados no período de{" "}
-        {formatarData(item.dt_inicio_periodo)} a{" "}
+        {item.mat_pessoa || item.matr || "-"}, requer a Vossa Senhoria o gozo de
+        férias regulamentares referente ao exercício de{" "}
+        {item.ano_exercicio || "-"}, prevista para o mês de{" "}
+        {getNomeMes(item.mes_previsto)} de {item.ano_previsto || "-"}, a serem
+        gozadas no período de {formatarData(item.dt_inicio_periodo)} a{" "}
         {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
         {item.nu_requerimento_sei || "-"}. Deferido em{" "}
         {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
@@ -234,10 +204,6 @@ export function DetalheMinutaPage() {
   const [registrosMarcacaoPraca, setRegistrosMarcacaoPraca] = useState([]);
   const [registrosMarcacaoOficial, setRegistrosMarcacaoOficial] = useState([]);
   const [registrosMarcacaoCivil, setRegistrosMarcacaoCivil] = useState([]);
-
-  const [registrosAbonoOficial, setRegistrosAbonoOficial] = useState([]);
-  const [registrosAbonoPraca, setRegistrosAbonoPraca] = useState([]);
-  const [registrosAbonoCivil, setRegistrosAbonoCivil] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
@@ -269,10 +235,6 @@ export function DetalheMinutaPage() {
         setRegistrosMarcacaoOficial([]);
         setRegistrosMarcacaoCivil([]);
 
-        setRegistrosAbonoOficial([]);
-        setRegistrosAbonoPraca([]);
-        setRegistrosAbonoCivil([]);
-
         const dataMinuta = await apiFetch(
           `${API_BUSCAR_MINUTA}/${id}`,
           { method: "GET" },
@@ -292,9 +254,6 @@ export function DetalheMinutaPage() {
             dataMarcacaoPraca,
             dataMarcacaoOficial,
             dataMarcacaoCivil,
-            dataAbonoOficial,
-            dataAbonoPraca,
-            dataAbonoCivil,
           ] = await Promise.all([
             apiFetch(
               `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
@@ -341,21 +300,6 @@ export function DetalheMinutaPage() {
               { method: "GET" },
               getValidAccessToken,
             ),
-            apiFetch(
-              `${API_LISTAR_ABONO_OFICIAL_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_ABONO_PRACA_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_ABONO_CIVIL_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
           ]);
 
           setRegistrosAntecipPraca(normalizarLista(dataAntecipPraca));
@@ -369,15 +313,12 @@ export function DetalheMinutaPage() {
           setRegistrosMarcacaoPraca(normalizarLista(dataMarcacaoPraca));
           setRegistrosMarcacaoOficial(normalizarLista(dataMarcacaoOficial));
           setRegistrosMarcacaoCivil(normalizarLista(dataMarcacaoCivil));
-
-          setRegistrosAbonoOficial(normalizarLista(dataAbonoOficial));
-          setRegistrosAbonoPraca(normalizarLista(dataAbonoPraca));
-          setRegistrosAbonoCivil(normalizarLista(dataAbonoCivil));
         } catch (errorRegistros) {
           console.error(
             "Erro ao carregar registros de férias:",
             errorRegistros,
           );
+
           setErroRegistros(
             errorRegistros.message || "Erro ao carregar registros vinculados.",
           );
@@ -510,7 +451,7 @@ export function DetalheMinutaPage() {
               )}
 
               <p>D - ABONO DE PONTO ANUAL</p>
-              {renderBlocoAbono(registrosAbonoOficial, "id_abono_oficial")}
+              <p>Sem Alteração.</p>
 
               <p>2 - DE PRAÇAS</p>
 
@@ -533,7 +474,7 @@ export function DetalheMinutaPage() {
               )}
 
               <p>D - ABONO DE PONTO ANUAL</p>
-              {renderBlocoAbono(registrosAbonoPraca, "id_abono_praca")}
+              <p>Sem Alteração.</p>
 
               <p>3 - FUNCIONÁRIOS CIVIS</p>
 
@@ -556,7 +497,7 @@ export function DetalheMinutaPage() {
               )}
 
               <p>D - ABONO DE PONTO ANUAL</p>
-              {renderBlocoAbono(registrosAbonoCivil, "id_abono_civil")}
+              <p>Sem Alteração.</p>
             </div>
           </div>
         </div>
