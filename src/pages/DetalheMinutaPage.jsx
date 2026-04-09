@@ -423,7 +423,7 @@ export function DetalheMinutaPage() {
     <div>
       <PageHeader
         title="Detalhar Minuta"
-        subtitle="Minuta gerada para ser anexada no SEI."
+        subtitle="Minuta gerada para ser anexada no SEI. xxx"
       />
 
       {loading && <div className="loading-text">Carregando minuta...</div>}
