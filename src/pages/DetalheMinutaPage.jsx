@@ -5,6 +5,7 @@ import { useAuth } from "../auth/useAuth";
 import { apiFetch } from "../services/api";
 
 const API_BUSCAR_MINUTA = import.meta.env.VITE_API_URL_BUSCAR_MINUTA;
+
 const API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA = import.meta.env
   .VITE_API_URL_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA;
 
@@ -14,13 +15,37 @@ const API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA = import.meta.env
 const API_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA = import.meta.env
   .VITE_API_URL_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA;
 
+const API_LISTAR_FERIAS_REPROGRAMACAO_PRACA_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_FERIAS_REPROGRAMACAO_PRACA_POR_MINUTA;
+
+const API_LISTAR_FERIAS_REPROGRAMACAO_OFICIAL_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_FERIAS_REPROGRAMACAO_OFICIAL_POR_MINUTA;
+
+const API_LISTAR_FERIAS_REPROGRAMACAO_CIVIL_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_FERIAS_REPROGRAMACAO_CIVIL_POR_MINUTA;
+
+const API_LISTAR_FERIAS_MARCACAO_PRACA_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_FERIAS_MARCACAO_PRACA_POR_MINUTA;
+
+const API_LISTAR_FERIAS_MARCACAO_OFICIAL_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_FERIAS_MARCACAO_OFICIAL_POR_MINUTA;
+
+const API_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA;
+
 function formatarData(data) {
   if (!data) return "-";
 
-  const dt = new Date(data);
-  if (Number.isNaN(dt.getTime())) return data;
+  const valor = String(data).slice(0, 10);
+  const partes = valor.split("-");
 
-  return dt.toLocaleDateString("pt-BR");
+  if (partes.length !== 3) {
+    const dt = new Date(data);
+    if (Number.isNaN(dt.getTime())) return data;
+    return dt.toLocaleDateString("pt-BR");
+  }
+
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
 function renderTipo(tipo) {
@@ -86,15 +111,99 @@ function montarNomePessoa(item) {
   );
 }
 
+function normalizarLista(data) {
+  if (Array.isArray(data?.registros)) return data.registros;
+  if (Array.isArray(data)) return data;
+  return [];
+}
+
+function renderBlocoAntecipacao(lista, tipoIdField) {
+  if (!lista || lista.length === 0) {
+    return <p>Sem Alteração.</p>;
+  }
+
+  return lista.map((item, index) => (
+    <div key={item[tipoIdField] || index} style={{ marginBottom: "16px" }}>
+      <p>
+        {montarNomePessoa(item)}, Matrícula{" "}
+        {item.mat_pessoa || item.matr || "-"}, requer a Vossa Senhoria a
+        antecipação de {item.qtd_dias_ferias || "-"} dias de férias
+        regulamentares, referente ao exercício de {item.ano_exercicio || "-"},
+        prevista para o mês de {getNomeMes(item.mes_previsto)} de{" "}
+        {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
+        {formatarData(item.dt_inicio_periodo)} a{" "}
+        {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
+        {item.nu_requerimento_sei || "-"}. Deferido em{" "}
+        {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
+        {item.nu_deferimento_sei || "-"}.
+      </p>
+    </div>
+  ));
+}
+
+function renderBlocoReprogramacao(lista, tipoIdField) {
+  if (!lista || lista.length === 0) {
+    return <p>Sem Alteração.</p>;
+  }
+
+  return lista.map((item, index) => (
+    <div key={item[tipoIdField] || index} style={{ marginBottom: "16px" }}>
+      <p>
+        {montarNomePessoa(item)}, Matrícula{" "}
+        {item.mat_pessoa || item.matr || "-"}, requer a Vossa Senhoria a
+        reprogramação de férias regulamentares, referente ao exercício de{" "}
+        {item.ano_exercicio || "-"}, prevista para o mês de{" "}
+        {getNomeMes(item.mes_previsto)} de {item.ano_previsto || "-"}, para o
+        mês de {getNomeMes(item.mes_pretendido)} de {item.ano_pretendido || "-"}
+        ; Doc. SEI {item.nu_requerimento_sei || "-"}. Deferido em{" "}
+        {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
+        {item.nu_deferimento_sei || "-"}.
+      </p>
+    </div>
+  ));
+}
+
+function renderBlocoMarcacao(lista, tipoIdField) {
+  if (!lista || lista.length === 0) {
+    return <p>Sem Alteração.</p>;
+  }
+
+  return lista.map((item, index) => (
+    <div key={item[tipoIdField] || index} style={{ marginBottom: "16px" }}>
+      <p>
+        {montarNomePessoa(item)}, Matrícula{" "}
+        {item.mat_pessoa || item.matr || "-"}, terá férias regulamentares,
+        referente ao exercício de {item.ano_exercicio || "-"}, prevista para o
+        mês de {getNomeMes(item.mes_previsto)} de {item.ano_previsto || "-"}, a
+        serem gozadas no período de {formatarData(item.dt_inicio_periodo)} a{" "}
+        {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
+        {item.nu_requerimento_sei || "-"}. Deferido em{" "}
+        {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
+        {item.nu_deferimento_sei || "-"}.
+      </p>
+    </div>
+  ));
+}
+
 export function DetalheMinutaPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { getValidAccessToken } = useAuth();
 
   const [minuta, setMinuta] = useState(null);
-  const [registrosFerias, setRegistrosFerias] = useState([]);
-  const [registrosFeriasOficial, setRegistrosFeriasOficial] = useState([]);
-  const [registrosFeriasCivil, setRegistrosFeriasCivil] = useState([]);
+
+  const [registrosAntecipPraca, setRegistrosAntecipPraca] = useState([]);
+  const [registrosAntecipOficial, setRegistrosAntecipOficial] = useState([]);
+  const [registrosAntecipCivil, setRegistrosAntecipCivil] = useState([]);
+
+  const [registrosReprogPraca, setRegistrosReprogPraca] = useState([]);
+  const [registrosReprogOficial, setRegistrosReprogOficial] = useState([]);
+  const [registrosReprogCivil, setRegistrosReprogCivil] = useState([]);
+
+  const [registrosMarcacaoPraca, setRegistrosMarcacaoPraca] = useState([]);
+  const [registrosMarcacaoOficial, setRegistrosMarcacaoOficial] = useState([]);
+  const [registrosMarcacaoCivil, setRegistrosMarcacaoCivil] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
   const [erroRegistros, setErroRegistros] = useState("");
@@ -112,9 +221,18 @@ export function DetalheMinutaPage() {
         setErro("");
         setErroRegistros("");
         setMinuta(null);
-        setRegistrosFerias([]);
-        setRegistrosFeriasOficial([]);
-        setRegistrosFeriasCivil([]);
+
+        setRegistrosAntecipPraca([]);
+        setRegistrosAntecipOficial([]);
+        setRegistrosAntecipCivil([]);
+
+        setRegistrosReprogPraca([]);
+        setRegistrosReprogOficial([]);
+        setRegistrosReprogCivil([]);
+
+        setRegistrosMarcacaoPraca([]);
+        setRegistrosMarcacaoOficial([]);
+        setRegistrosMarcacaoCivil([]);
 
         const dataMinuta = await apiFetch(
           `${API_BUSCAR_MINUTA}/${id}`,
@@ -125,56 +243,84 @@ export function DetalheMinutaPage() {
         setMinuta(dataMinuta);
 
         try {
-          const dataRegistros = await apiFetch(
-            `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          );
+          const [
+            dataAntecipPraca,
+            dataAntecipOficial,
+            dataAntecipCivil,
+            dataReprogPraca,
+            dataReprogOficial,
+            dataReprogCivil,
+            dataMarcacaoPraca,
+            dataMarcacaoOficial,
+            dataMarcacaoCivil,
+          ] = await Promise.all([
+            apiFetch(
+              `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
+              { method: "GET" },
+              getValidAccessToken,
+            ),
+            apiFetch(
+              `${API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA}/${id}`,
+              { method: "GET" },
+              getValidAccessToken,
+            ),
+            apiFetch(
+              `${API_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA}/${id}`,
+              { method: "GET" },
+              getValidAccessToken,
+            ),
+            apiFetch(
+              `${API_LISTAR_FERIAS_REPROGRAMACAO_PRACA_POR_MINUTA}/${id}`,
+              { method: "GET" },
+              getValidAccessToken,
+            ),
+            apiFetch(
+              `${API_LISTAR_FERIAS_REPROGRAMACAO_OFICIAL_POR_MINUTA}/${id}`,
+              { method: "GET" },
+              getValidAccessToken,
+            ),
+            apiFetch(
+              `${API_LISTAR_FERIAS_REPROGRAMACAO_CIVIL_POR_MINUTA}/${id}`,
+              { method: "GET" },
+              getValidAccessToken,
+            ),
+            apiFetch(
+              `${API_LISTAR_FERIAS_MARCACAO_PRACA_POR_MINUTA}/${id}`,
+              { method: "GET" },
+              getValidAccessToken,
+            ),
+            apiFetch(
+              `${API_LISTAR_FERIAS_MARCACAO_OFICIAL_POR_MINUTA}/${id}`,
+              { method: "GET" },
+              getValidAccessToken,
+            ),
+            apiFetch(
+              `${API_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA}/${id}`,
+              { method: "GET" },
+              getValidAccessToken,
+            ),
+          ]);
 
-          const dataRegistrosOficial = await apiFetch(
-            `${API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          );
+          setRegistrosAntecipPraca(normalizarLista(dataAntecipPraca));
+          setRegistrosAntecipOficial(normalizarLista(dataAntecipOficial));
+          setRegistrosAntecipCivil(normalizarLista(dataAntecipCivil));
 
-          const dataRegistrosCivil = await apiFetch(
-            `${API_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          );
+          setRegistrosReprogPraca(normalizarLista(dataReprogPraca));
+          setRegistrosReprogOficial(normalizarLista(dataReprogOficial));
+          setRegistrosReprogCivil(normalizarLista(dataReprogCivil));
 
-          const lista = Array.isArray(dataRegistros?.registros)
-            ? dataRegistros.registros
-            : Array.isArray(dataRegistros)
-              ? dataRegistros
-              : [];
-
-          setRegistrosFerias(lista);
-
-          const listaOficial = Array.isArray(dataRegistrosOficial?.registros)
-            ? dataRegistrosOficial.registros
-            : Array.isArray(dataRegistrosOficial)
-              ? dataRegistrosOficial
-              : [];
-
-          setRegistrosFeriasOficial(listaOficial);
-
-          const listaCivil = Array.isArray(dataRegistrosCivil?.registros)
-            ? dataRegistrosCivil.registros
-            : Array.isArray(dataRegistrosCivil)
-              ? dataRegistrosCivil
-              : [];
-
-          setRegistrosFeriasCivil(listaCivil);
+          setRegistrosMarcacaoPraca(normalizarLista(dataMarcacaoPraca));
+          setRegistrosMarcacaoOficial(normalizarLista(dataMarcacaoOficial));
+          setRegistrosMarcacaoCivil(normalizarLista(dataMarcacaoCivil));
         } catch (errorRegistros) {
           console.error(
             "Erro ao carregar registros de férias:",
             errorRegistros,
           );
+
           setErroRegistros(
             errorRegistros.message || "Erro ao carregar registros vinculados.",
           );
-          setRegistrosFerias([]);
         }
       } catch (error) {
         console.error("Erro ao carregar minuta:", error);
@@ -282,113 +428,73 @@ export function DetalheMinutaPage() {
               <p>3ª PARTE – ASSUNTOS GERAIS E ADMINISTRATIVOS</p>
               <p>I - ASSUNTOS ADMINISTRATIVOS</p>
               <p>(A) - PESSOAL/ALTERAÇÕES DIVERSAS</p>
-              <p>1 - OFICIAIS</p>
-              <p>A - FÉRIAS/INÍCIO/TÉRMINO</p>
-              <p>(B) DESPACHOS EM REQUERIMENTOS</p>
-              <p>1 - DE OFICIAIS</p>
-              <p>A - FÉRIAS/ANTECIPAÇÃO</p>
 
-              {registrosFeriasOficial.length === 0 ? (
-                <p>Sem Alteração.</p>
-              ) : (
-                registrosFeriasOficial.map((item, index) => (
-                  <div
-                    key={item.id_ferias_antecipacao_oficial || index}
-                    style={{ marginBottom: "16px" }}
-                  >
-                    <p>
-                      {montarNomePessoa(item)}, Matrícula{" "}
-                      {item.mat_pessoa || item.matr || "-"}, requer a Vossa
-                      Senhoria a antecipação de {item.qtd_dias_ferias || "-"}{" "}
-                      dias de férias regulamentares, referente ao exercício de{" "}
-                      {item.ano_exercicio || "-"}, prevista para o mês de{" "}
-                      {getNomeMes(item.mes_previsto)} de{" "}
-                      {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
-                      {formatarData(item.dt_inicio_periodo)} a{" "}
-                      {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
-                      {item.nu_requerimento_sei || "-"}. Deferido em{" "}
-                      {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
-                      {item.nu_deferimento_sei || "-"}.
-                    </p>
-                  </div>
-                ))
+              <p>1 - OFICIAIS</p>
+
+              <p>A - FÉRIAS/ANTECIPAÇÃO</p>
+              {renderBlocoAntecipacao(
+                registrosAntecipOficial,
+                "id_ferias_antecipacao_oficial",
               )}
 
               <p>B - FÉRIAS/MARCAÇÃO</p>
-              <p>Sem Alteração.</p>
+              {renderBlocoMarcacao(
+                registrosMarcacaoOficial,
+                "id_ferias_marcacao_oficial",
+              )}
+
               <p>C - FÉRIAS/REPROGRAMAÇÃO</p>
-              <p>Sem Alteração.</p>
+              {renderBlocoReprogramacao(
+                registrosReprogOficial,
+                "id_ferias_reprogramacao_oficial",
+              )}
+
               <p>D - ABONO DE PONTO ANUAL</p>
               <p>Sem Alteração.</p>
-              <p>2 - DE PRAÇAS</p>
-              <p>A - FÉRIAS/ANTECIPAÇÃO</p>
 
-              {registrosFerias.length === 0 ? (
-                <p>Sem Alteração.</p>
-              ) : (
-                registrosFerias.map((item, index) => (
-                  <div
-                    key={item.id_ferias_antecipacao_praca || index}
-                    style={{ marginBottom: "16px" }}
-                  >
-                    <p>
-                      {montarNomePessoa(item)}, Matrícula{" "}
-                      {item.mat_pessoa || item.matr || "-"}, requer a Vossa
-                      Senhoria a antecipação de {item.qtd_dias_ferias || "-"}{" "}
-                      dias de férias regulamentares, referente ao exercício de{" "}
-                      {item.ano_exercicio || "-"}, prevista para o mês de{" "}
-                      {getNomeMes(item.mes_previsto)} de{" "}
-                      {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
-                      {formatarData(item.dt_inicio_periodo)} a{" "}
-                      {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
-                      {item.nu_requerimento_sei || "-"}. Deferido em{" "}
-                      {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
-                      {item.nu_deferimento_sei || "-"}.
-                    </p>
-                  </div>
-                ))
+              <p>2 - DE PRAÇAS</p>
+
+              <p>A - FÉRIAS/ANTECIPAÇÃO</p>
+              {renderBlocoAntecipacao(
+                registrosAntecipPraca,
+                "id_ferias_antecipacao_praca",
               )}
 
               <p>B - FÉRIAS/MARCAÇÃO</p>
-              <p>Sem Alteração.</p>
+              {renderBlocoMarcacao(
+                registrosMarcacaoPraca,
+                "id_ferias_marcacao_praca",
+              )}
+
               <p>C - FÉRIAS/REPROGRAMAÇÃO</p>
-              <p>Sem Alteração.</p>
+              {renderBlocoReprogramacao(
+                registrosReprogPraca,
+                "id_ferias_reprogramacao_praca",
+              )}
+
               <p>D - ABONO DE PONTO ANUAL</p>
               <p>Sem Alteração.</p>
 
               <p>3 - FUNCIONÁRIOS CIVIS</p>
-              <p>A - FÉRIAS/ANTECIPAÇÃO</p>
 
-              {registrosFeriasCivil.length === 0 ? (
-                <p>Sem Alteração.</p>
-              ) : (
-                registrosFeriasCivil.map((item, index) => (
-                  <div
-                    key={item.id_ferias_antecipacao_civil || index}
-                    style={{ marginBottom: "16px" }}
-                  >
-                    <p>
-                      {montarNomePessoa(item)}, Matrícula{" "}
-                      {item.mat_pessoa || item.matr || "-"}, requer a Vossa
-                      Senhoria a antecipação de {item.qtd_dias_ferias || "-"}{" "}
-                      dias de férias regulamentares, referente ao exercício de{" "}
-                      {item.ano_exercicio || "-"}, prevista para o mês de{" "}
-                      {getNomeMes(item.mes_previsto)} de{" "}
-                      {item.ano_previsto || "-"}, a serem gozadas no período de{" "}
-                      {formatarData(item.dt_inicio_periodo)} a{" "}
-                      {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
-                      {item.nu_requerimento_sei || "-"}. Deferido em{" "}
-                      {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
-                      {item.nu_deferimento_sei || "-"}.
-                    </p>
-                  </div>
-                ))
+              <p>A - FÉRIAS/ANTECIPAÇÃO</p>
+              {renderBlocoAntecipacao(
+                registrosAntecipCivil,
+                "id_ferias_antecipacao_civil",
               )}
 
               <p>B - FÉRIAS/MARCAÇÃO</p>
-              <p>Sem Alteração.</p>
+              {renderBlocoMarcacao(
+                registrosMarcacaoCivil,
+                "id_ferias_marcacao_civil",
+              )}
+
               <p>C - FÉRIAS/REPROGRAMAÇÃO</p>
-              <p>Sem Alteração.</p>
+              {renderBlocoReprogramacao(
+                registrosReprogCivil,
+                "id_ferias_reprogramacao_civil",
+              )}
+
               <p>D - ABONO DE PONTO ANUAL</p>
               <p>Sem Alteração.</p>
             </div>

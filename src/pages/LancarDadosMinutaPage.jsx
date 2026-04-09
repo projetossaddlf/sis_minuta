@@ -153,7 +153,7 @@ export function LancarDadosMinutaPage() {
                     navigate(`/minutas/${id}/ferias-marcacao-civil`)
                   }
                 >
-                  Civil
+                  F. Civil
                 </button>
               </div>
 
@@ -184,7 +184,7 @@ export function LancarDadosMinutaPage() {
                     navigate(`/minutas/${id}/ferias-reprogramacao-civil`)
                   }
                 >
-                  Civil
+                  F. Civil
                 </button>
               </div>
 
