@@ -217,45 +217,23 @@ function renderBlocoAbono(lista, tipoIdField) {
   ));
 }
 
-function getResultadoSettled(results, index) {
-  const item = results[index];
-
-  if (!item || item.status !== "fulfilled") {
-    return [];
+async function buscarListaComFallback({
+  url,
+  getValidAccessToken,
+  nomeBloco,
+  setLista,
+  acumularErro,
+}) {
+  try {
+    const data = await apiFetch(url, { method: "GET" }, getValidAccessToken);
+    setLista(normalizarLista(data));
+  } catch (error) {
+    console.error(`Erro ao carregar ${nomeBloco}:`, error);
+    setLista([]);
+    acumularErro(
+      `${nomeBloco}: ${error?.message || "erro ao carregar registros"}`,
+    );
   }
-
-  return normalizarLista(item.value);
-}
-
-function getMensagemErroSettled(results) {
-  const falhas = results
-    .map((item, index) => ({ item, index }))
-    .filter(({ item }) => item.status === "rejected");
-
-  if (falhas.length === 0) return "";
-
-  const nomes = {
-    0: "Férias Antecipação Praça",
-    1: "Férias Antecipação Oficial",
-    2: "Férias Antecipação Civil",
-    3: "Férias Reprogramação Praça",
-    4: "Férias Reprogramação Oficial",
-    5: "Férias Reprogramação Civil",
-    6: "Férias Marcação Praça",
-    7: "Férias Marcação Oficial",
-    8: "Férias Marcação Civil",
-    9: "Abono Oficial",
-    10: "Abono Praça",
-    11: "Abono Civil",
-  };
-
-  return falhas
-    .map(({ item, index }) => {
-      const nome = nomes[index] || `Bloco ${index + 1}`;
-      const detalhe = item.reason?.message || "erro ao carregar";
-      return `${nome}: ${detalhe}`;
-    })
-    .join(" | ");
 }
 
 export function DetalheMinutaPage() {
@@ -323,89 +301,110 @@ export function DetalheMinutaPage() {
 
         setMinuta(dataMinuta);
 
-        const resultados = await Promise.allSettled([
-          apiFetch(
-            `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_FERIAS_REPROGRAMACAO_PRACA_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_FERIAS_REPROGRAMACAO_OFICIAL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_FERIAS_REPROGRAMACAO_CIVIL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_FERIAS_MARCACAO_PRACA_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_FERIAS_MARCACAO_OFICIAL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_ABONO_OFICIAL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_ABONO_PRACA_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-          apiFetch(
-            `${API_LISTAR_ABONO_CIVIL_POR_MINUTA}/${id}`,
-            { method: "GET" },
-            getValidAccessToken,
-          ),
-        ]);
+        const erros = [];
+        const acumularErro = (mensagem) => {
+          erros.push(mensagem);
+        };
 
-        setRegistrosAntecipPraca(getResultadoSettled(resultados, 0));
-        setRegistrosAntecipOficial(getResultadoSettled(resultados, 1));
-        setRegistrosAntecipCivil(getResultadoSettled(resultados, 2));
+        await buscarListaComFallback({
+          url: `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Férias Antecipação Praça",
+          setLista: setRegistrosAntecipPraca,
+          acumularErro,
+        });
 
-        setRegistrosReprogPraca(getResultadoSettled(resultados, 3));
-        setRegistrosReprogOficial(getResultadoSettled(resultados, 4));
-        setRegistrosReprogCivil(getResultadoSettled(resultados, 5));
+        await buscarListaComFallback({
+          url: `${API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Férias Antecipação Oficial",
+          setLista: setRegistrosAntecipOficial,
+          acumularErro,
+        });
 
-        setRegistrosMarcacaoPraca(getResultadoSettled(resultados, 6));
-        setRegistrosMarcacaoOficial(getResultadoSettled(resultados, 7));
-        setRegistrosMarcacaoCivil(getResultadoSettled(resultados, 8));
+        await buscarListaComFallback({
+          url: `${API_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Férias Antecipação Civil",
+          setLista: setRegistrosAntecipCivil,
+          acumularErro,
+        });
 
-        setRegistrosAbonoOficial(getResultadoSettled(resultados, 9));
-        setRegistrosAbonoPraca(getResultadoSettled(resultados, 10));
-        setRegistrosAbonoCivil(getResultadoSettled(resultados, 11));
+        await buscarListaComFallback({
+          url: `${API_LISTAR_FERIAS_REPROGRAMACAO_PRACA_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Férias Reprogramação Praça",
+          setLista: setRegistrosReprogPraca,
+          acumularErro,
+        });
 
-        const mensagemErro = getMensagemErroSettled(resultados);
-        if (mensagemErro) {
+        await buscarListaComFallback({
+          url: `${API_LISTAR_FERIAS_REPROGRAMACAO_OFICIAL_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Férias Reprogramação Oficial",
+          setLista: setRegistrosReprogOficial,
+          acumularErro,
+        });
+
+        await buscarListaComFallback({
+          url: `${API_LISTAR_FERIAS_REPROGRAMACAO_CIVIL_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Férias Reprogramação Civil",
+          setLista: setRegistrosReprogCivil,
+          acumularErro,
+        });
+
+        await buscarListaComFallback({
+          url: `${API_LISTAR_FERIAS_MARCACAO_PRACA_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Férias Marcação Praça",
+          setLista: setRegistrosMarcacaoPraca,
+          acumularErro,
+        });
+
+        await buscarListaComFallback({
+          url: `${API_LISTAR_FERIAS_MARCACAO_OFICIAL_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Férias Marcação Oficial",
+          setLista: setRegistrosMarcacaoOficial,
+          acumularErro,
+        });
+
+        await buscarListaComFallback({
+          url: `${API_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Férias Marcação Civil",
+          setLista: setRegistrosMarcacaoCivil,
+          acumularErro,
+        });
+
+        await buscarListaComFallback({
+          url: `${API_LISTAR_ABONO_OFICIAL_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Abono Oficial",
+          setLista: setRegistrosAbonoOficial,
+          acumularErro,
+        });
+
+        await buscarListaComFallback({
+          url: `${API_LISTAR_ABONO_PRACA_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Abono Praça",
+          setLista: setRegistrosAbonoPraca,
+          acumularErro,
+        });
+
+        await buscarListaComFallback({
+          url: `${API_LISTAR_ABONO_CIVIL_POR_MINUTA}/${id}`,
+          getValidAccessToken,
+          nomeBloco: "Abono Civil",
+          setLista: setRegistrosAbonoCivil,
+          acumularErro,
+        });
+
+        if (erros.length > 0) {
           setErroRegistros(
-            `Alguns blocos não foram carregados: ${mensagemErro}`,
+            `Alguns blocos não foram carregados: ${erros.join(" | ")}`,
           );
         }
       } catch (error) {
@@ -423,7 +422,7 @@ export function DetalheMinutaPage() {
     <div>
       <PageHeader
         title="Detalhar Minuta"
-        subtitle="Minuta gerada para ser anexada no SEI. xxx"
+        subtitle="Minuta gerada para ser anexada no SEI."
       />
 
       {loading && <div className="loading-text">Carregando minuta...</div>}
