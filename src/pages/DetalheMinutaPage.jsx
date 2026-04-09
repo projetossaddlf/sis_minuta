@@ -33,6 +33,15 @@ const API_LISTAR_FERIAS_MARCACAO_OFICIAL_POR_MINUTA = import.meta.env
 const API_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA = import.meta.env
   .VITE_API_URL_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA;
 
+const API_LISTAR_ABONO_OFICIAL_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_ABONO_OFICIAL_POR_MINUTA;
+
+const API_LISTAR_ABONO_PRACA_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_ABONO_PRACA_POR_MINUTA;
+
+const API_LISTAR_ABONO_CIVIL_POR_MINUTA = import.meta.env
+  .VITE_API_URL_LISTAR_ABONO_CIVIL_POR_MINUTA;
+
 function formatarData(data) {
   if (!data) return "-";
 
@@ -186,6 +195,69 @@ function renderBlocoMarcacao(lista, tipoIdField) {
   ));
 }
 
+function renderBlocoAbono(lista, tipoIdField) {
+  if (!lista || lista.length === 0) {
+    return <p>Sem Alteração.</p>;
+  }
+
+  return lista.map((item, index) => (
+    <div key={item[tipoIdField] || index} style={{ marginBottom: "16px" }}>
+      <p>
+        {montarNomePessoa(item)}, Matrícula{" "}
+        {item.mat_pessoa || item.matr || "-"}, requer a Vossa Senhoria o gozo de{" "}
+        {item.qtd_dias_abono || "-"} dias de abono de ponto anual, referente ao
+        exercício de {item.ano_exercicio || "-"}, a serem gozados no período de{" "}
+        {formatarData(item.dt_inicio_periodo)} a{" "}
+        {formatarData(item.dt_fim_periodo)}; Doc. SEI{" "}
+        {item.nu_requerimento_sei || "-"}. Deferido em{" "}
+        {formatarData(item.dt_deferimento_sei)} Doc. SEI{" "}
+        {item.nu_deferimento_sei || "-"}.
+      </p>
+    </div>
+  ));
+}
+
+function getResultadoSettled(results, index) {
+  const item = results[index];
+
+  if (!item || item.status !== "fulfilled") {
+    return [];
+  }
+
+  return normalizarLista(item.value);
+}
+
+function getMensagemErroSettled(results) {
+  const falhas = results
+    .map((item, index) => ({ item, index }))
+    .filter(({ item }) => item.status === "rejected");
+
+  if (falhas.length === 0) return "";
+
+  const nomes = {
+    0: "Férias Antecipação Praça",
+    1: "Férias Antecipação Oficial",
+    2: "Férias Antecipação Civil",
+    3: "Férias Reprogramação Praça",
+    4: "Férias Reprogramação Oficial",
+    5: "Férias Reprogramação Civil",
+    6: "Férias Marcação Praça",
+    7: "Férias Marcação Oficial",
+    8: "Férias Marcação Civil",
+    9: "Abono Oficial",
+    10: "Abono Praça",
+    11: "Abono Civil",
+  };
+
+  return falhas
+    .map(({ item, index }) => {
+      const nome = nomes[index] || `Bloco ${index + 1}`;
+      const detalhe = item.reason?.message || "erro ao carregar";
+      return `${nome}: ${detalhe}`;
+    })
+    .join(" | ");
+}
+
 export function DetalheMinutaPage() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -204,6 +276,10 @@ export function DetalheMinutaPage() {
   const [registrosMarcacaoPraca, setRegistrosMarcacaoPraca] = useState([]);
   const [registrosMarcacaoOficial, setRegistrosMarcacaoOficial] = useState([]);
   const [registrosMarcacaoCivil, setRegistrosMarcacaoCivil] = useState([]);
+
+  const [registrosAbonoOficial, setRegistrosAbonoOficial] = useState([]);
+  const [registrosAbonoPraca, setRegistrosAbonoPraca] = useState([]);
+  const [registrosAbonoCivil, setRegistrosAbonoCivil] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
@@ -235,6 +311,10 @@ export function DetalheMinutaPage() {
         setRegistrosMarcacaoOficial([]);
         setRegistrosMarcacaoCivil([]);
 
+        setRegistrosAbonoOficial([]);
+        setRegistrosAbonoPraca([]);
+        setRegistrosAbonoCivil([]);
+
         const dataMinuta = await apiFetch(
           `${API_BUSCAR_MINUTA}/${id}`,
           { method: "GET" },
@@ -243,84 +323,89 @@ export function DetalheMinutaPage() {
 
         setMinuta(dataMinuta);
 
-        try {
-          const [
-            dataAntecipPraca,
-            dataAntecipOficial,
-            dataAntecipCivil,
-            dataReprogPraca,
-            dataReprogOficial,
-            dataReprogCivil,
-            dataMarcacaoPraca,
-            dataMarcacaoOficial,
-            dataMarcacaoCivil,
-          ] = await Promise.all([
-            apiFetch(
-              `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_FERIAS_REPROGRAMACAO_PRACA_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_FERIAS_REPROGRAMACAO_OFICIAL_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_FERIAS_REPROGRAMACAO_CIVIL_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_FERIAS_MARCACAO_PRACA_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_FERIAS_MARCACAO_OFICIAL_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-            apiFetch(
-              `${API_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA}/${id}`,
-              { method: "GET" },
-              getValidAccessToken,
-            ),
-          ]);
+        const resultados = await Promise.allSettled([
+          apiFetch(
+            `${API_LISTAR_FERIAS_ANTECIP_PRACA_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_FERIAS_ANTECIP_OFICIAL_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_FERIAS_ANTECIP_CIVIL_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_FERIAS_REPROGRAMACAO_PRACA_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_FERIAS_REPROGRAMACAO_OFICIAL_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_FERIAS_REPROGRAMACAO_CIVIL_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_FERIAS_MARCACAO_PRACA_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_FERIAS_MARCACAO_OFICIAL_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_FERIAS_MARCACAO_CIVIL_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_ABONO_OFICIAL_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_ABONO_PRACA_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+          apiFetch(
+            `${API_LISTAR_ABONO_CIVIL_POR_MINUTA}/${id}`,
+            { method: "GET" },
+            getValidAccessToken,
+          ),
+        ]);
 
-          setRegistrosAntecipPraca(normalizarLista(dataAntecipPraca));
-          setRegistrosAntecipOficial(normalizarLista(dataAntecipOficial));
-          setRegistrosAntecipCivil(normalizarLista(dataAntecipCivil));
+        setRegistrosAntecipPraca(getResultadoSettled(resultados, 0));
+        setRegistrosAntecipOficial(getResultadoSettled(resultados, 1));
+        setRegistrosAntecipCivil(getResultadoSettled(resultados, 2));
 
-          setRegistrosReprogPraca(normalizarLista(dataReprogPraca));
-          setRegistrosReprogOficial(normalizarLista(dataReprogOficial));
-          setRegistrosReprogCivil(normalizarLista(dataReprogCivil));
+        setRegistrosReprogPraca(getResultadoSettled(resultados, 3));
+        setRegistrosReprogOficial(getResultadoSettled(resultados, 4));
+        setRegistrosReprogCivil(getResultadoSettled(resultados, 5));
 
-          setRegistrosMarcacaoPraca(normalizarLista(dataMarcacaoPraca));
-          setRegistrosMarcacaoOficial(normalizarLista(dataMarcacaoOficial));
-          setRegistrosMarcacaoCivil(normalizarLista(dataMarcacaoCivil));
-        } catch (errorRegistros) {
-          console.error(
-            "Erro ao carregar registros de férias:",
-            errorRegistros,
-          );
+        setRegistrosMarcacaoPraca(getResultadoSettled(resultados, 6));
+        setRegistrosMarcacaoOficial(getResultadoSettled(resultados, 7));
+        setRegistrosMarcacaoCivil(getResultadoSettled(resultados, 8));
 
+        setRegistrosAbonoOficial(getResultadoSettled(resultados, 9));
+        setRegistrosAbonoPraca(getResultadoSettled(resultados, 10));
+        setRegistrosAbonoCivil(getResultadoSettled(resultados, 11));
+
+        const mensagemErro = getMensagemErroSettled(resultados);
+        if (mensagemErro) {
           setErroRegistros(
-            errorRegistros.message || "Erro ao carregar registros vinculados.",
+            `Alguns blocos não foram carregados: ${mensagemErro}`,
           );
         }
       } catch (error) {
@@ -451,7 +536,7 @@ export function DetalheMinutaPage() {
               )}
 
               <p>D - ABONO DE PONTO ANUAL</p>
-              <p>Sem Alteração.</p>
+              {renderBlocoAbono(registrosAbonoOficial, "id_abono_oficial")}
 
               <p>2 - DE PRAÇAS</p>
 
@@ -474,7 +559,7 @@ export function DetalheMinutaPage() {
               )}
 
               <p>D - ABONO DE PONTO ANUAL</p>
-              <p>Sem Alteração.</p>
+              {renderBlocoAbono(registrosAbonoPraca, "id_abono_praca")}
 
               <p>3 - FUNCIONÁRIOS CIVIS</p>
 
@@ -497,7 +582,7 @@ export function DetalheMinutaPage() {
               )}
 
               <p>D - ABONO DE PONTO ANUAL</p>
-              <p>Sem Alteração.</p>
+              {renderBlocoAbono(registrosAbonoCivil, "id_abono_civil")}
             </div>
           </div>
         </div>
