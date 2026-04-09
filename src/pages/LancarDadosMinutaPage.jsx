@@ -127,6 +127,62 @@ export function LancarDadosMinutaPage() {
 
             <div className="lancamentos-grid-4">
               <div className="lancamento-col">
+                <h3 className="lancamento-title">Abono de Ponto</h3>
+
+                <button
+                  className="admin-button"
+                  onClick={() => navigate(`/minutas/${id}/abono-oficial`)}
+                >
+                  Oficial
+                </button>
+
+                <button
+                  className="admin-button"
+                  onClick={() => navigate(`/minutas/${id}/abono-praca`)}
+                >
+                  Praça
+                </button>
+
+                <button
+                  className="admin-button"
+                  onClick={() => navigate(`/minutas/${id}/abono-civil`)}
+                >
+                  F. Civil
+                </button>
+              </div>
+
+              <div className="lancamento-col">
+                <h3 className="lancamento-title">Férias Antecipação</h3>
+
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-antecipacao-oficial`)
+                  }
+                >
+                  Oficial
+                </button>
+
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-antecipacao-praca`)
+                  }
+                >
+                  Praça
+                </button>
+
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/ferias-antecipacao-civil`)
+                  }
+                >
+                  F. Civil
+                </button>
+              </div>
+
+              <div className="lancamento-col">
                 <h3 className="lancamento-title">Férias Marcação</h3>
 
                 <button
@@ -183,62 +239,6 @@ export function LancarDadosMinutaPage() {
                   onClick={() =>
                     navigate(`/minutas/${id}/ferias-reprogramacao-civil`)
                   }
-                >
-                  F. Civil
-                </button>
-              </div>
-
-              <div className="lancamento-col">
-                <h3 className="lancamento-title">Férias Antecipação</h3>
-
-                <button
-                  className="admin-button"
-                  onClick={() =>
-                    navigate(`/minutas/${id}/ferias-antecipacao-oficial`)
-                  }
-                >
-                  Oficial
-                </button>
-
-                <button
-                  className="admin-button"
-                  onClick={() =>
-                    navigate(`/minutas/${id}/ferias-antecipacao-praca`)
-                  }
-                >
-                  Praça
-                </button>
-
-                <button
-                  className="admin-button"
-                  onClick={() =>
-                    navigate(`/minutas/${id}/ferias-antecipacao-civil`)
-                  }
-                >
-                  F. Civil
-                </button>
-              </div>
-
-              <div className="lancamento-col">
-                <h3 className="lancamento-title">Abono de Ponto</h3>
-
-                <button
-                  className="admin-button"
-                  onClick={() => navigate(`/minutas/${id}/abono-oficial`)}
-                >
-                  Oficial
-                </button>
-
-                <button
-                  className="admin-button"
-                  onClick={() => navigate(`/minutas/${id}/abono-praca`)}
-                >
-                  Praça
-                </button>
-
-                <button
-                  className="admin-button"
-                  onClick={() => navigate(`/minutas/${id}/abono-civil`)}
                 >
                   F. Civil
                 </button>
