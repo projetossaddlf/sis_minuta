@@ -75,7 +75,7 @@ export function LancarDadosMinutaPage() {
     <div>
       <PageHeader
         title="Lançar Dados da Minuta"
-        subtitle="Montar sessões da Minuta."
+        subtitle="Inserir informações de cada tópico da minuta"
       />
 
       {loading && <div className="loading-text">Carregando minuta...</div>}
@@ -122,7 +122,7 @@ export function LancarDadosMinutaPage() {
 
           <div className="content-card">
             <div className="detail-card-header">
-              <h2 className="detail-card-title">Lançamentos da Minuta</h2>
+              <h2 className="detail-card-title">Lançar Tópicos da Minuta</h2>
             </div>
 
             <div className="lancamentos-grid-4">
