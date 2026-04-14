@@ -244,6 +244,30 @@ export function LancarDadosMinutaPage() {
                 </button>
               </div>
             </div>
+
+            <div className="lancamentos-grid-2" style={{ marginTop: 20 }}>
+              <div className="lancamento-col">
+                <h3 className="lancamento-title">Dispensa Recompensa</h3>
+
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/dispensa-recompensa-oficial`)
+                  }
+                >
+                  Oficial
+                </button>
+
+                <button
+                  className="admin-button"
+                  onClick={() =>
+                    navigate(`/minutas/${id}/dispensa-recompensa-praca`)
+                  }
+                >
+                  Praça
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

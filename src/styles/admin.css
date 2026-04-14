@@ -574,3 +574,15 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+.lancamentos-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 700px) {
+  .lancamentos-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
