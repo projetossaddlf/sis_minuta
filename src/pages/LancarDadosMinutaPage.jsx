@@ -245,7 +245,7 @@ export function LancarDadosMinutaPage() {
               </div>
             </div>
 
-            <div className="lancamentos-grid-2" style={{ marginTop: 20 }}>
+            <div className="lancamentos-grid-4" style={{ marginTop: 20 }}>
               <div className="lancamento-col">
                 <h3 className="lancamento-title">Dispensa Recompensa</h3>
 
